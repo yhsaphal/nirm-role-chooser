@@ -63,17 +63,12 @@
     </div>
   </div>
 
-  <!-- Auth0 SDK -->
-  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+  <!-- Auth0 SDK with ID for load event -->
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js" id="auth0-sdk"></script>
 
   <script>
-    window.onload = async () => {
-      if (typeof createAuth0Client !== 'function') {
-        alert("Auth0 SDK failed to load. Please try again later.");
-        window.location.href = "https://nirm.uk";
-        return;
-      }
-
+    // Wait for the Auth0 SDK to load
+    document.getElementById('auth0-sdk').addEventListener('load', async () => {
       const auth0 = await createAuth0Client({
         domain: "nirm.uk.auth0.com",
         client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6",
@@ -119,10 +114,10 @@
           }
         };
       } catch (err) {
-        // If error (like token expired), send to main domain
+        // On error, redirect back to main domain
         window.location.href = "https://nirm.uk";
       }
-    };
+    });
   </script>
 </body>
 </html>
