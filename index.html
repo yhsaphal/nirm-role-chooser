@@ -1,0 +1,103 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NIRM Role Chooser</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet" />
+<style>
+  body, html {
+    margin: 0; padding: 0; height: 100vh;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    background: #fffcf0;
+    overflow: hidden;
+  }
+  .split-role-container {
+    display: flex; height: 100vh;
+  }
+  .left-side {
+    flex: 1;
+    background: url('https://placehold.co/600x800?text=Add+Your+Photo+or+Video+Here') center center / cover no-repeat;
+  }
+  .right-side {
+    flex: 1;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 40px;
+    text-align: center;
+    background: #fffcf0;
+  }
+  .right-side h1 {
+    font-size: 2.4rem;
+    color: #001b3e;
+    margin-bottom: 30px;
+  }
+  .role-button {
+    background-color: #001b3e;
+    color: white;
+    border: none;
+    padding: 16px 36px;
+    border-radius: 999px;
+    font-size: 1.1rem;
+    margin: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.10);
+  }
+  .role-button:hover {
+    background-color: #1f2f57;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.2), 0 6px 10px rgba(0,0,0,0.15);
+  }
+</style>
+</head>
+<body>
+  <div class="split-role-container">
+    <div class="left-side"></div>
+    <div class="right-side">
+      <h1>Who are you?</h1>
+      <button class="role-button" onclick="setRole('individual')">I'm an Individual</button>
+      <button class="role-button" onclick="setRole('business')">I'm a Business Owner</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+  <script>
+    (async () => {
+      const auth0 = await createAuth0Client({
+        domain: "nirm.uk.auth0.com",
+        client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6",
+        cacheLocation: "localstorage"
+      });
+
+      window.setRole = async (role) => {
+        try {
+          const user = await auth0.getUser();
+          const token = await auth0.getTokenSilently({
+            audience: "https://nirm.uk.auth0.com/api/v2/"
+          });
+
+          await fetch(`https://nirm.uk.auth0.com/api/v2/users/${user.sub}`, {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              user_metadata: { role }
+            })
+          });
+
+          window.location.href = role === "individual"
+            ? "https://nirm.uk/form-individual"
+            : "https://nirm.uk/form-business";
+        } catch (err) {
+          alert("Something went wrong while setting your role. Please try again.");
+          console.error(err);
+        }
+      };
+    })();
+  </script>
+</body>
+</html>
