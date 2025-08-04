@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NIRM Role Chooser</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet" />
+<!-- Hide from search engines -->
+<meta name="robots" content="noindex, nofollow" />
 <style>
   body, html {
     margin: 0; padding: 0; height: 100vh;
@@ -53,7 +54,7 @@
 </style>
 </head>
 <body>
-  <div class="split-role-container">
+  <div class="split-role-container" id="chooserole-container" style="display:none;">
     <div class="left-side"></div>
     <div class="right-side">
       <h1>Who are you?</h1>
@@ -71,32 +72,48 @@
         cacheLocation: "localstorage"
       });
 
-      window.setRole = async (role) => {
-        try {
-          const user = await auth0.getUser();
-          const token = await auth0.getTokenSilently({
-            audience: "https://nirm.uk.auth0.com/api/v2/"
-          });
+      try {
+        const isAuthenticated = await auth0.isAuthenticated();
 
-          await fetch(`https://nirm.uk.auth0.com/api/v2/users/${user.sub}`, {
-            method: "PATCH",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              user_metadata: { role }
-            })
-          });
-
-          window.location.href = role === "individual"
-            ? "https://nirm.uk/form-individual"
-            : "https://nirm.uk/form-business";
-        } catch (err) {
-          alert("Something went wrong while setting your role. Please try again.");
-          console.error(err);
+        if (!isAuthenticated) {
+          // Not logged in — redirect to main domain
+          window.location.href = "https://nirm.uk";
+          return;
         }
-      };
+
+        // Show the role chooser UI
+        document.getElementById('chooserole-container').style.display = 'flex';
+
+        window.setRole = async (role) => {
+          try {
+            const user = await auth0.getUser();
+            const token = await auth0.getTokenSilently({
+              audience: "https://nirm.uk.auth0.com/api/v2/"
+            });
+
+            await fetch(`https://nirm.uk.auth0.com/api/v2/users/${user.sub}`, {
+              method: "PATCH",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                user_metadata: { role }
+              })
+            });
+
+            window.location.href = role === "individual"
+              ? "https://nirm.uk/form-individual"
+              : "https://nirm.uk/form-business";
+          } catch (err) {
+            alert("Something went wrong while setting your role. Please try again.");
+            console.error(err);
+          }
+        };
+      } catch (err) {
+        // If error (like token expired), send to main domain
+        window.location.href = "https://nirm.uk";
+      }
     })();
   </script>
 </body>
