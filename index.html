@@ -35,9 +35,9 @@
     }
 
     .logo {
-      font-size: 2rem;
+      font-size: 3rem; /* Increased size */
       font-weight: bold;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
       letter-spacing: 1px;
     }
 
@@ -51,19 +51,21 @@
 
     .tagline span {
       display: inline-block;
-      animation: slideText 20s infinite linear;
+      animation: slideText 32s infinite linear; /* 8 lines × 4s */
       white-space: nowrap;
+      line-height: 2rem;
     }
 
     @keyframes slideText {
       0% { transform: translateY(0); }
-      14% { transform: translateY(-100%); }
-      28% { transform: translateY(-200%); }
-      42% { transform: translateY(-300%); }
-      56% { transform: translateY(-400%); }
-      70% { transform: translateY(-500%); }
-      84% { transform: translateY(-600%); }
-      100% { transform: translateY(-700%); }
+      12.5% { transform: translateY(-100%); }
+      25% { transform: translateY(-200%); }
+      37.5% { transform: translateY(-300%); }
+      50% { transform: translateY(-400%); }
+      62.5% { transform: translateY(-500%); }
+      75% { transform: translateY(-600%); }
+      87.5% { transform: translateY(-700%); }
+      100% { transform: translateY(0); }
     }
 
     .buttons {
@@ -97,7 +99,7 @@
       }
 
       .logo {
-        font-size: 1.6rem;
+        font-size: 2.2rem;
       }
     }
   </style>
