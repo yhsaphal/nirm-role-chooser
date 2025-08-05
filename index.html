@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="robots" content="noindex">
-  <title>NIRM Hero</title>
+  <title>NIRM Hero Box</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500&display=swap');
 
@@ -17,42 +17,42 @@
     body {
       font-family: 'Bricolage Grotesque', sans-serif;
       background-color: #fffcf0;
-      color: #001b3e;
-      height: 100vh;
+      color: #ffffff;
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 100vh;
     }
 
-    .main-wrapper {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .hero-box {
+      background-color: #001b3e;
+      padding: 3rem 2rem;
+      border-radius: 20px;
+      max-width: 600px;
       width: 90%;
-      max-width: 1000px;
-    }
-
-    .left-side {
-      flex: 1;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
 
     .logo {
-      font-size: 2.5rem;
+      font-size: 2rem;
       font-weight: bold;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 1px;
     }
 
     .tagline {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       height: 2rem;
       overflow: hidden;
       position: relative;
+      margin-bottom: 2rem;
     }
 
     .tagline span {
       display: inline-block;
-      white-space: nowrap;
       animation: slideText 20s infinite linear;
+      white-space: nowrap;
     }
 
     @keyframes slideText {
@@ -66,58 +66,58 @@
       100% { transform: translateY(-700%); }
     }
 
-    .right-side {
+    .buttons {
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      margin-top: 1rem;
     }
 
-    .right-side a {
+    .buttons a {
       text-decoration: none;
-      padding: 1rem 2rem;
+      background-color: #ffffff;
+      color: #001b3e;
+      padding: 0.9rem 1.5rem;
       border-radius: 30px;
       font-weight: 600;
-      background-color: #001b3e;
-      color: #fff;
       transition: background-color 0.3s ease;
-      text-align: center;
     }
 
-    .right-side a:hover {
-      background-color: #003366;
+    .buttons a:hover {
+      background-color: #d6d6d6;
     }
 
-    @media (max-width: 768px) {
-      .main-wrapper {
-        flex-direction: column;
-        text-align: center;
-        gap: 2rem;
+    @media (max-width: 500px) {
+      .hero-box {
+        padding: 2rem 1.5rem;
       }
 
-      .right-side a {
-        width: 100%;
+      .tagline {
+        font-size: 1rem;
+      }
+
+      .logo {
+        font-size: 1.6rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="main-wrapper">
-    <div class="left-side">
-      <div class="logo">NIRM</div>
-      <div class="tagline">
-        <span>
-          Connecting You to the Best.<br/>
-          Your Vision, Our Tech.<br/>
-          Your Event, Your Way.<br/>
-          Built for You.<br/>
-          Powered by SapphireAI, Backed by OpenAI.<br/>
-          The Clear Path for Seamless Execution.<br/>
-          Your Sourcing Solution.<br/>
-          Where Events Meet Innovation.
-        </span>
-      </div>
+  <div class="hero-box">
+    <div class="logo">NIRM</div>
+    <div class="tagline">
+      <span>
+        Connecting You to the Best.<br/>
+        Your Vision, Our Tech.<br/>
+        Your Event, Your Way.<br/>
+        Built for You.<br/>
+        Powered by SapphireAI, Backed by OpenAI.<br/>
+        The Clear Path for Seamless Execution.<br/>
+        Your Sourcing Solution.<br/>
+        Where Events Meet Innovation.
+      </span>
     </div>
-    <div class="right-side">
+    <div class="buttons">
       <a href="https://nirm.uk/form/individual">An Individual User</a>
       <a href="https://nirm.uk/form/business">A Business Owner</a>
     </div>
