@@ -1,123 +1,147 @@
+<!-- Role Chooser (SEO-safe, Auth0-ready) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>Choose Your Role - NIRM</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Role</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet">
   <style>
-    body {
+    body, html {
       margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: 'Bricolage Grotesque', sans-serif;
-      background-color: #fffcf0;
-      color: #001b3e;
+      background: #fffcf0;
+    }
+
+    .split-role-container {
       display: flex;
       height: 100vh;
-      overflow: hidden;
-    }
-    .container {
-      display: flex;
       width: 100%;
-      height: 100vh;
     }
-    /* Left side: role selection */
-    .role-select {
+
+    .left-side {
+      flex: 1;
+      background: url('https://uploads-ssl.webflow.com/6623c9fc377ab95ff30c1fe1/664ddd8288d650c501aaf7ac_Rectangle%2098-p-800.webp') center center / cover no-repeat;
+      position: relative;
+    }
+
+    .left-side::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 27, 62, 0.35); /* optional overlay */
+    }
+
+    .right-side {
       flex: 1;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      padding: 2rem;
-      background: linear-gradient(145deg, #ffffff, #f4f1e8);
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+      align-items: center;
+      padding: 40px;
+      background-color: #fffcf0;
       text-align: center;
     }
-    .role-select h1 {
-      font-size: 2rem;
-      margin-bottom: 2rem;
+
+    .right-side h1 {
+      font-size: 32px;
+      color: #001b3e;
+      margin-bottom: 30px;
     }
-    .role-btn {
-      padding: 1rem 2rem;
-      margin: 1rem;
-      border: none;
-      border-radius: 999px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #fff;
+
+    .role-button {
       background-color: #001b3e;
-      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      margin: 10px;
+      font-size: 18px;
+      border-radius: 999px;
       cursor: pointer;
-      width: 220px;
+      box-shadow: 0 6px 0 #00122e;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
-    .role-btn:hover {
+
+    .role-button:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #00122e;
+    }
+
+    .role-button:hover {
       background-color: #1f2f57;
-      transform: scale(1.05);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
-    /* Right side: image gallery */
-    .gallery {
-      flex: 1;
-      background-color: #000;
-      overflow: hidden;
-      position: relative;
-    }
-    .gallery img {
-      width: 100%;
-      height: 100vh;
-      object-fit: cover;
-      position: absolute;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
-    }
-    .gallery img.active {
-      opacity: 1;
+
+    @media screen and (max-width: 768px) {
+      .split-role-container {
+        flex-direction: column;
+      }
+
+      .left-side, .right-side {
+        flex: none;
+        width: 100%;
+        height: 50vh;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="role-select">
-      <h1>Choose Your Role</h1>
-      <button class="role-btn" onclick="selectRole('individual')">I'm an Individual</button>
-      <button class="role-btn" onclick="selectRole('business')">I'm a Business Owner</button>
+  <div class="split-role-container">
+    <div class="left-side">
+      <!-- Background image already set via CSS -->
     </div>
-    <div class="gallery">
-      <img src="https://source.unsplash.com/1600x900/?event" class="active" alt="Event" />
-      <img src="https://source.unsplash.com/1600x900/?venue" alt="Venue" />
-      <img src="https://source.unsplash.com/1600x900/?wedding" alt="Wedding" />
-      <img src="https://source.unsplash.com/1600x900/?party" alt="Party" />
-      <img src="https://source.unsplash.com/1600x900/?conference" alt="Conference" />
-      <img src="https://source.unsplash.com/1600x900/?catering" alt="Catering" />
+    <div class="right-side">
+      <h1>Who are you?</h1>
+      <button class="role-button" onclick="setRole('individual')">I'm an Individual</button>
+      <button class="role-button" onclick="setRole('business')">I'm a Business Owner</button>
     </div>
   </div>
 
+  <!-- Auth0 + Role Setting Script -->
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
   <script>
-    // Optional: remove this redirect check during dev/testing if needed
-    if (!document.referrer.includes('nirm.uk')) {
-      // Commented out for easier dev, uncomment when live
-      // window.location.href = 'https://nirm.uk';
-    }
+    setTimeout(() => {
+      (async () => {
+        const auth0 = await createAuth0Client({
+          domain: "nirm.uk.auth0.com",
+          client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6", // updated
+          cacheLocation: "localstorage"
+        });
 
-    // Image carousel
-    const images = document.querySelectorAll('.gallery img');
-    let currentIndex = 0;
-    setInterval(() => {
-      images.forEach(img => img.classList.remove('active'));
-      currentIndex = (currentIndex + 1) % images.length;
-      images[currentIndex].classList.add('active');
-    }, 2000);
+        window.setRole = async (role) => {
+          try {
+            const user = await auth0.getUser();
+            const token = await auth0.getTokenSilently({
+              audience: "https://nirm.uk.auth0.com/api/v2/"
+            });
 
-    // Role select button handlers
-    function selectRole(role) {
-      localStorage.setItem('nirm_role', role);
-      if (role === 'individual') {
-        window.location.href = 'https://nirm.uk/individual-form';
-      } else if (role === 'business') {
-        window.location.href = 'https://nirm.uk/business-form';
-      }
-    }
+            await fetch(`https://nirm.uk.auth0.com/api/v2/users/${user.sub}`, {
+              method: "PATCH",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                user_metadata: { role }
+              })
+            });
+
+            const redirectURL = role === "individual"
+              ? "https://nirm.uk/form-individual"
+              : "https://nirm.uk/form-business";
+
+            window.location.href = redirectURL;
+
+          } catch (err) {
+            alert("Something went wrong while setting your role. Please try again.");
+            console.error(err);
+          }
+        };
+      })();
+    }, 200);
   </script>
 </body>
 </html>
