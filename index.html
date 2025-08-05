@@ -2,248 +2,166 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Choose Your Role | NIRM</title>
-  <meta name="robots" content="noindex, nofollow" />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex">
+  <title>NIRM Hero</title>
   <style>
-    html, body {
-      margin: 0; padding: 0; height: 100%;
+    @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
       font-family: 'Bricolage Grotesque', sans-serif;
-      background: #fffcf0;
+      background-color: #fffcf0;
       color: #001b3e;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
     .container {
       display: flex;
-      height: 100vh;
-      width: 100%;
+      flex-direction: row-reverse;
+      width: 90%;
+      max-width: 1200px;
+      background-color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       overflow: hidden;
     }
 
-    /* Left side with animated text */
-    .left-side {
+    .text-section {
       flex: 1;
-      position: relative;
-      background: linear-gradient(135deg, #001b3e 0%, #003366 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      color: white;
-      text-align: center;
-      padding: 0 20px;
-    }
-
-    .left-side::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-color: rgba(0, 27, 62, 0.6);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .text-container {
-      position: relative;
-      z-index: 2;
-      max-width: 400px;
-    }
-
-    .nirm-title {
-      font-size: 5rem;
-      font-weight: 900;
-      margin: 0 0 1rem 0;
-      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
-      user-select: none;
-    }
-
-    .animated-sentences {
-      font-size: 1.75rem;
-      font-weight: 500;
-      min-height: 3.5rem;
-      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
-      user-select: none;
-      line-height: 1.3;
-    }
-
-    /* Right side */
-    .right-side {
-      flex: 1;
+      padding: 3rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
-      padding: 60px 40px;
-      background-color: #fffcf0;
-      text-align: center;
-      box-sizing: border-box;
+      align-items: flex-start;
+      background-color: #f0f4ff;
       position: relative;
-      z-index: 10;
+    }
+
+    .logo {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      position: absolute;
+      top: 2rem;
+      left: 3rem;
+    }
+
+    .tagline {
+      font-size: 1.5rem;
+      margin-top: 5rem;
+      height: 4rem;
+      overflow: hidden;
+      position: relative;
       color: #001b3e;
     }
 
-    .right-side h1 {
-      font-size: 36px;
-      font-weight: 700;
-      margin-bottom: 40px;
-      letter-spacing: 0.04em;
-      user-select: none;
+    .tagline span {
+      display: inline-block;
+      white-space: nowrap;
+      animation: slideText 20s infinite linear;
     }
 
-    .role-button {
-      background-color: #001b3e;
-      color: white;
-      border: none;
-      padding: 18px 44px;
-      margin: 12px 0;
-      font-size: 20px;
+    @keyframes slideText {
+      0% { transform: translateY(0); }
+      14% { transform: translateY(-100%); }
+      28% { transform: translateY(-200%); }
+      42% { transform: translateY(-300%); }
+      56% { transform: translateY(-400%); }
+      70% { transform: translateY(-500%); }
+      84% { transform: translateY(-600%); }
+      100% { transform: translateY(-700%); }
+    }
+
+    .cta-buttons {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .cta-buttons a {
+      text-decoration: none;
+      padding: 1rem 2rem;
+      border-radius: 30px;
       font-weight: 600;
-      border-radius: 9999px;
-      cursor: pointer;
-      box-shadow: 0 6px 0 #00122e;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.3s ease;
-      width: 280px;
-      user-select: none;
-      will-change: transform;
+      background-color: #001b3e;
+      color: #fff;
+      transition: background-color 0.3s ease;
     }
-    .role-button:hover {
-      background-color: #1f2f57;
-      transform: translateY(-3px);
-      box-shadow: 0 9px 8px rgba(0,0,0,0.15);
+
+    .cta-buttons a:hover {
+      background-color: #003366;
     }
-    .role-button:active {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0 #00122e;
-      background-color: #00122e;
+
+    .empty-section {
+      flex: 1;
+      background-color: #f0f4ff;
     }
 
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
+        height: auto;
       }
-      .left-side, .right-side {
-        flex: none;
+
+      .logo {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin-bottom: 1rem;
+      }
+
+      .text-section {
+        padding: 2rem;
+        align-items: center;
+        text-align: center;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
         width: 100%;
-        height: 50vh;
+        align-items: center;
       }
-      .role-button {
+
+      .cta-buttons a {
         width: 80%;
-        max-width: 300px;
-      }
-      .nirm-title {
-        font-size: 3.5rem;
-      }
-      .animated-sentences {
-        font-size: 1.25rem;
-      }
-      .right-side h1 {
-        font-size: 28px;
+        text-align: center;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="left-side">
-      <div class="text-container">
-        <h1 class="nirm-title">NIRM</h1>
-        <p class="animated-sentences"></p>
+    <div class="text-section">
+      <div class="logo">NIRM</div>
+      <div class="tagline">
+        <span>
+          Connecting You to the Best.<br/>
+          Your Vision, Our Tech.<br/>
+          Your Event, Your Way.<br/>
+          Built for You.<br/>
+          Powered by SapphireAI, Backed by OpenAI.<br/>
+          The Clear Path for Seamless Execution.<br/>
+          Your Sourcing Solution.<br/>
+          Where Events Meet Innovation.
+        </span>
+      </div>
+      <div class="cta-buttons">
+        <a href="https://nirm.uk/form/individual">An Individual User</a>
+        <a href="https://nirm.uk/form/business">A Business Owner</a>
       </div>
     </div>
-    <div class="right-side">
-      <h1>Who are you?</h1>
-      <button class="role-button" onclick="setRole('individual')">I'm an Individual</button>
-      <button class="role-button" onclick="setRole('business')">I'm a Business Owner</button>
+    <div class="empty-section">
+      <!-- You can later add background images, graphics or animations here -->
     </div>
   </div>
-
-  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
-  <script>
-    // Sentences you chose for the animated text
-    const sentences = [
-      "Connecting You to the Best.",
-      "Your Vision, Our Tech.",
-      "Your Event, Your Way.",
-      "Built for You.",
-      "Powered by SapphireAI, Backed by OpenAI.",
-      "The Clear Path for Seamless Execution.",
-      "Your sourcing solution."
-    ];
-
-    const sentenceElement = document.querySelector(".animated-sentences");
-    let index = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    const typingSpeed = 80;
-    const pauseBetween = 2200;
-
-    function typeSentence() {
-      const current = sentences[index];
-      if (!isDeleting) {
-        sentenceElement.textContent = current.substring(0, charIndex + 1);
-        charIndex++;
-        if (charIndex === current.length) {
-          isDeleting = true;
-          setTimeout(typeSentence, pauseBetween);
-          return;
-        }
-      } else {
-        sentenceElement.textContent = current.substring(0, charIndex - 1);
-        charIndex--;
-        if (charIndex === 0) {
-          isDeleting = false;
-          index = (index + 1) % sentences.length;
-        }
-      }
-      setTimeout(typeSentence, isDeleting ? typingSpeed / 2 : typingSpeed);
-    }
-
-    typeSentence();
-
-    // Auth0 client init + role setting
-    setTimeout(() => {
-      (async () => {
-        const auth0 = await createAuth0Client({
-          domain: "nirm.uk.auth0.com",
-          client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6",
-          cacheLocation: "localstorage"
-        });
-
-        // Optionally you can add login checks here if needed
-
-        window.setRole = async (role) => {
-          try {
-            const user = await auth0.getUser();
-            const token = await auth0.getTokenSilently({
-              audience: "https://nirm.uk.auth0.com/api/v2/"
-            });
-
-            await fetch(`https://nirm.uk.auth0.com/api/v2/users/${user.sub}`, {
-              method: "PATCH",
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                user_metadata: { role }
-              })
-            });
-
-            const redirectURL = role === "individual"
-              ? "https://nirm.uk/form/individual"
-              : "https://nirm.uk/form/business";
-
-            window.location.href = redirectURL;
-
-          } catch (err) {
-            alert("Something went wrong while setting your role. Please try again.");
-            console.error(err);
-          }
-        };
-      })();
-    }, 200);
-  </script>
 </body>
 </html>
