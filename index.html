@@ -1,123 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>NIRM Role Chooser</title>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet" />
-<!-- Hide from search engines -->
-<meta name="robots" content="noindex, nofollow" />
-<style>
-  body, html {
-    margin: 0; padding: 0; height: 100vh;
-    font-family: 'Bricolage Grotesque', sans-serif;
-    background: #fffcf0;
-    overflow: hidden;
-  }
-  .split-role-container {
-    display: flex; height: 100vh;
-  }
-  .left-side {
-    flex: 1;
-    background: url('https://placehold.co/600x800?text=Add+Your+Photo+or+Video+Here') center center / cover no-repeat;
-  }
-  .right-side {
-    flex: 1;
-    display: flex; flex-direction: column;
-    justify-content: center; align-items: center;
-    padding: 40px;
-    text-align: center;
-    background: #fffcf0;
-  }
-  .right-side h1 {
-    font-size: 2.4rem;
-    color: #001b3e;
-    margin-bottom: 30px;
-  }
-  .role-button {
-    background-color: #001b3e;
-    color: white;
-    border: none;
-    padding: 16px 36px;
-    border-radius: 999px;
-    font-size: 1.1rem;
-    margin: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.10);
-  }
-  .role-button:hover {
-    background-color: #1f2f57;
-    transform: translateY(-4px);
-    box-shadow: 0 12px 20px rgba(0,0,0,0.2), 0 6px 10px rgba(0,0,0,0.15);
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Select Role - NIRM</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      background-color: #fffcf0;
+      color: #001b3e;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+    }
+    /* Left side: image gallery */
+    .gallery {
+      flex: 1;
+      background-color: #000;
+      overflow: hidden;
+      position: relative;
+    }
+    .gallery img {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+      position: absolute;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    .gallery img.active {
+      opacity: 1;
+    }
+    /* Right side: role selection */
+    .role-select {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: linear-gradient(145deg, #ffffff, #f4f1e8);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+    .role-select h1 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+    .role-btn {
+      padding: 1rem 2rem;
+      margin: 1rem;
+      border: none;
+      border-radius: 999px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+      background-color: #001b3e;
+      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+      width: 220px;
+    }
+    .role-btn:hover {
+      background-color: #1f2f57;
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+  </style>
 </head>
 <body>
-  <div class="split-role-container" id="chooserole-container" style="display:none;">
-    <div class="left-side"></div>
-    <div class="right-side">
-      <h1>Who are you?</h1>
-      <button class="role-button" onclick="setRole('individual')">I'm an Individual</button>
-      <button class="role-button" onclick="setRole('business')">I'm a Business Owner</button>
+  <div class="container">
+    <div class="gallery">
+      <img src="https://source.unsplash.com/1600x900/?event" class="active" />
+      <img src="https://source.unsplash.com/1600x900/?venue" />
+      <img src="https://source.unsplash.com/1600x900/?wedding" />
+      <img src="https://source.unsplash.com/1600x900/?party" />
+      <img src="https://source.unsplash.com/1600x900/?conference" />
+      <img src="https://source.unsplash.com/1600x900/?catering" />
+    </div>
+    <div class="role-select">
+      <h1>I am</h1>
+      <button class="role-btn" onclick="selectRole('individual')">An Individual User</button>
+      <button class="role-btn" onclick="selectRole('business')">A Business Owner</button>
     </div>
   </div>
 
-  <!-- Auth0 SDK with ID for load event -->
-  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js" id="auth0-sdk"></script>
-
   <script>
-    // Wait for the Auth0 SDK to load
-    document.getElementById('auth0-sdk').addEventListener('load', async () => {
-      const auth0 = await createAuth0Client({
-        domain: "nirm.uk.auth0.com",
-        client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6",
-        cacheLocation: "localstorage"
-      });
+    // Prevent direct access unless referred from nirm.uk
+    if (!document.referrer.includes('nirm.uk')) {
+      window.location.href = 'https://nirm.uk';
+    }
 
-      try {
-        const isAuthenticated = await auth0.isAuthenticated();
+    // Image carousel logic
+    const images = document.querySelectorAll('.gallery img');
+    let index = 0;
+    setInterval(() => {
+      images.forEach(img => img.classList.remove('active'));
+      index = (index + 1) % images.length;
+      images[index].classList.add('active');
+    }, 2000); // shorter than Instagram story
 
-        if (!isAuthenticated) {
-          // Not logged in — redirect to main domain
-          window.location.href = "https://nirm.uk";
-          return;
-        }
-
-        // Show the role chooser UI
-        document.getElementById('chooserole-container').style.display = 'flex';
-
-        window.setRole = async (role) => {
-          try {
-            const user = await auth0.getUser();
-            const token = await auth0.getTokenSilently({
-              audience: "https://nirm.uk.auth0.com/api/v2/"
-            });
-
-            await fetch(`https://nirm.uk.auth0.com/api/v2/users/${user.sub}`, {
-              method: "PATCH",
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                user_metadata: { role }
-              })
-            });
-
-            window.location.href = role === "individual"
-              ? "https://nirm.uk/form-individual"
-              : "https://nirm.uk/form-business";
-          } catch (err) {
-            alert("Something went wrong while setting your role. Please try again.");
-            console.error(err);
-          }
-        };
-      } catch (err) {
-        // On error, redirect back to main domain
-        window.location.href = "https://nirm.uk";
+    function selectRole(role) {
+      localStorage.setItem('nirm_role', role);
+      if (role === 'individual') {
+        window.location.href = 'https://nirm.uk/individual-form';
+      } else if (role === 'business') {
+        window.location.href = 'https://nirm.uk/business-form';
       }
-    });
+    }
   </script>
 </body>
 </html>
