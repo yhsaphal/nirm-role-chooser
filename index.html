@@ -1,71 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Role Selection</title>
-  <meta name="robots" content="noindex, nofollow">
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Choose Your Role | NIRM</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet" />
   <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
+    /* Reset + basics */
+    html, body {
+      margin: 0; padding: 0; height: 100%;
       font-family: 'Bricolage Grotesque', sans-serif;
       background: #fffcf0;
+      color: #001b3e;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    .split-role-container {
+    .container {
       display: flex;
       height: 100vh;
       width: 100%;
+      overflow: hidden;
     }
 
+    /* Left side slideshow container */
     .left-side {
       flex: 1;
-      background-color: #001b3e;
+      position: relative;
+      overflow: hidden;
     }
 
+    /* Slides stacked, only one visible at a time */
+    .slide {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-position: center;
+      background-size: cover;
+      opacity: 0;
+      transition: opacity 0.8s ease-in-out;
+      will-change: opacity;
+    }
+
+    .slide.visible {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    /* Dark overlay on top */
+    .left-side::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-color: rgba(0, 27, 62, 0.35);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Right side content */
     .right-side {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 40px;
+      padding: 60px 40px;
       background-color: #fffcf0;
       text-align: center;
+      box-sizing: border-box;
+      position: relative;
+      z-index: 10;
     }
 
     .right-side h1 {
-      font-size: 32px;
-      color: #001b3e;
-      margin-bottom: 30px;
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 40px;
+      letter-spacing: 0.04em;
     }
 
+    /* Buttons with 3D style and smooth hover */
     .role-button {
       background-color: #001b3e;
       color: white;
       border: none;
-      padding: 16px 32px;
-      margin: 10px;
-      font-size: 18px;
-      border-radius: 999px;
+      padding: 18px 44px;
+      margin: 12px 0;
+      font-size: 20px;
+      font-weight: 600;
+      border-radius: 9999px;
       cursor: pointer;
       box-shadow: 0 6px 0 #00122e;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.3s ease;
+      width: 280px;
+      user-select: none;
+      will-change: transform;
     }
-
+    .role-button:hover {
+      background-color: #1f2f57;
+      transform: translateY(-3px);
+      box-shadow: 0 9px 8px rgba(0,0,0,0.15);
+    }
     .role-button:active {
       transform: translateY(4px);
       box-shadow: 0 2px 0 #00122e;
+      background-color: #00122e;
     }
 
-    .role-button:hover {
-      background-color: #1f2f57;
-    }
-
-    @media screen and (max-width: 768px) {
-      .split-role-container {
+    @media (max-width: 768px) {
+      .container {
         flex-direction: column;
       }
       .left-side, .right-side {
@@ -73,12 +117,25 @@
         width: 100%;
         height: 50vh;
       }
+      .role-button {
+        width: 80%;
+        max-width: 300px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="split-role-container">
-    <div class="left-side"></div>
+  <div class="container">
+    <div class="left-side" id="leftSide">
+      <div class="slide visible" style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80');"></div>
+      <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1527689368864-3a821dbccc34?auto=format&fit=crop&w=800&q=80');"></div>
+      <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1556741533-f6acd647d2fb?auto=format&fit=crop&w=800&q=80');"></div>
+      <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80');"></div>
+      <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80');"></div>
+      <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80');"></div>
+      <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=800&q=80');"></div>
+      <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=800&q=80');"></div>
+    </div>
     <div class="right-side">
       <h1>Who are you?</h1>
       <button class="role-button" onclick="setRole('individual')">I'm an Individual</button>
@@ -86,9 +143,20 @@
     </div>
   </div>
 
-  <!-- Auth0 + Role Setting Script -->
   <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
   <script>
+    // Slide show logic
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+    const slideInterval = 2000; // 2 seconds per slide
+
+    function showNextSlide() {
+      slides[current].classList.remove('visible');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('visible');
+    }
+    setInterval(showNextSlide, slideInterval);
+
     setTimeout(() => {
       (async () => {
         const auth0 = await createAuth0Client({
@@ -96,6 +164,14 @@
           client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6",
           cacheLocation: "localstorage"
         });
+
+        const isAuthenticated = await auth0.isAuthenticated();
+        if (!isAuthenticated) {
+          await auth0.loginWithRedirect({
+            redirect_uri: window.location.origin + window.location.pathname
+          });
+          return;
+        }
 
         window.setRole = async (role) => {
           try {
