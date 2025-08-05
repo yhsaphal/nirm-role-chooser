@@ -1,147 +1,136 @@
-<!-- Role Chooser (SEO-safe, Auth0-ready) -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Choose Role</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet">
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Bricolage Grotesque', sans-serif;
-      background: #fffcf0;
-    }
+<!-- Role Selector with Split Layout -->
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex, nofollow">
 
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    background: #fffcf0;
+  }
+
+  .split-role-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+  }
+
+  .left-side {
+    flex: 1;
+    background: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80') center center / cover no-repeat;
+    position: relative;
+  }
+
+  .left-side::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 27, 62, 0.35);
+  }
+
+  .right-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    background-color: #fffcf0;
+    text-align: center;
+  }
+
+  .right-side h1 {
+    font-size: 32px;
+    color: #001b3e;
+    margin-bottom: 30px;
+  }
+
+  .role-button {
+    background-color: #001b3e;
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    margin: 10px;
+    font-size: 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #00122e;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .role-button:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #00122e;
+  }
+
+  .role-button:hover {
+    background-color: #1f2f57;
+  }
+
+  @media screen and (max-width: 768px) {
     .split-role-container {
-      display: flex;
-      height: 100vh;
-      width: 100%;
-    }
-
-    .left-side {
-      flex: 1;
-      background: url('https://uploads-ssl.webflow.com/6623c9fc377ab95ff30c1fe1/664ddd8288d650c501aaf7ac_Rectangle%2098-p-800.webp') center center / cover no-repeat;
-      position: relative;
-    }
-
-    .left-side::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0, 27, 62, 0.35); /* optional overlay */
-    }
-
-    .right-side {
-      flex: 1;
-      display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 40px;
-      background-color: #fffcf0;
-      text-align: center;
     }
-
-    .right-side h1 {
-      font-size: 32px;
-      color: #001b3e;
-      margin-bottom: 30px;
+    .left-side, .right-side {
+      flex: none;
+      width: 100%;
+      height: 50vh;
     }
+  }
+</style>
 
-    .role-button {
-      background-color: #001b3e;
-      color: white;
-      border: none;
-      padding: 16px 32px;
-      margin: 10px;
-      font-size: 18px;
-      border-radius: 999px;
-      cursor: pointer;
-      box-shadow: 0 6px 0 #00122e;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .role-button:active {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0 #00122e;
-    }
-
-    .role-button:hover {
-      background-color: #1f2f57;
-    }
-
-    @media screen and (max-width: 768px) {
-      .split-role-container {
-        flex-direction: column;
-      }
-
-      .left-side, .right-side {
-        flex: none;
-        width: 100%;
-        height: 50vh;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="split-role-container">
-    <div class="left-side">
-      <!-- Background image already set via CSS -->
-    </div>
-    <div class="right-side">
-      <h1>Who are you?</h1>
-      <button class="role-button" onclick="setRole('individual')">I'm an Individual</button>
-      <button class="role-button" onclick="setRole('business')">I'm a Business Owner</button>
-    </div>
+<div class="split-role-container">
+  <div class="left-side"></div>
+  <div class="right-side">
+    <h1>Who are you?</h1>
+    <button class="role-button" onclick="setRole('individual')">I'm an Individual</button>
+    <button class="role-button" onclick="setRole('business')">I'm a Business Owner</button>
   </div>
+</div>
 
-  <!-- Auth0 + Role Setting Script -->
-  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
-  <script>
-    setTimeout(() => {
-      (async () => {
-        const auth0 = await createAuth0Client({
-          domain: "nirm.uk.auth0.com",
-          client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6", // updated
-          cacheLocation: "localstorage"
-        });
+<!-- Auth0 Role Setter -->
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+<script>
+  setTimeout(() => {
+    (async () => {
+      const auth0 = await createAuth0Client({
+        domain: "nirm.uk.auth0.com",
+        client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6", // ✅ New Client ID
+        cacheLocation: "localstorage"
+      });
 
-        window.setRole = async (role) => {
-          try {
-            const user = await auth0.getUser();
-            const token = await auth0.getTokenSilently({
-              audience: "https://nirm.uk.auth0.com/api/v2/"
-            });
+      window.setRole = async (role) => {
+        try {
+          const user = await auth0.getUser();
+          const token = await auth0.getTokenSilently({
+            audience: "https://nirm.uk.auth0.com/api/v2/"
+          });
 
-            await fetch(`https://nirm.uk.auth0.com/api/v2/users/${user.sub}`, {
-              method: "PATCH",
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                user_metadata: { role }
-              })
-            });
+          await fetch(`https://nirm.uk.auth0.com/api/v2/users/${user.sub}`, {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              user_metadata: { role }
+            })
+          });
 
-            const redirectURL = role === "individual"
-              ? "https://nirm.uk/form-individual"
-              : "https://nirm.uk/form-business";
+          const redirectURL = role === "individual"
+            ? "https://nirm.uk/form/individual"
+            : "https://nirm.uk/form/business";
 
-            window.location.href = redirectURL;
+          window.location.href = redirectURL;
 
-          } catch (err) {
-            alert("Something went wrong while setting your role. Please try again.");
-            console.error(err);
-          }
-        };
-      })();
-    }, 200);
-  </script>
-</body>
-</html>
+        } catch (err) {
+          alert("Something went wrong while setting your role. Please try again.");
+          console.error(err);
+        }
+      };
+    })();
+  }, 200);
+</script>
