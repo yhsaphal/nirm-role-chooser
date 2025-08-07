@@ -68,7 +68,7 @@
       margin-top: 1rem;
     }
 
-    .buttons a {
+    .buttons button {
       text-decoration: none;
       background-color: #ffffff;
       color: #001b3e;
@@ -76,9 +76,12 @@
       border-radius: 30px;
       font-weight: 600;
       transition: background-color 0.3s ease;
+      cursor: pointer;
+      border: none;
+      font-family: 'Bricolage Grotesque', sans-serif;
     }
 
-    .buttons a:hover {
+    .buttons button:hover {
       background-color: #d6d6d6;
     }
 
@@ -96,6 +99,7 @@
       }
     }
   </style>
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
 </head>
 <body>
   <div class="hero-box">
@@ -113,9 +117,45 @@
       </span>
     </div>
     <div class="buttons">
-      <a href="https://nirm.uk/formindividual">An Individual User</a>
-      <a href="https://nirm.uk/formbusiness">A Business Owner</a>
+      <button onclick="handleRoleSelect('individual')">An Individual User</button>
+      <button onclick="handleRoleSelect('business')">A Business Owner</button>
     </div>
   </div>
+
+  <script>
+    const auth0 = await createAuth0Client({
+      domain: nirm.uk.auth0.com,
+      client_id: nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6,
+    });
+
+    async function handleRoleSelect(role) {
+      try {
+        const user = await auth0.getUser();
+        const userId = user.sub;
+
+        await fetch(https://hook.eu2.make.com/87ho7oa10qtc65gt7k1yhlodo07nuq9y, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+            // Optional: Add custom secret header here
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            role: role
+          }),
+        });
+
+        // Redirect user to the appropriate form after role is recorded
+        if (role === "individual") {
+          window.location.href = "https://nirm.uk/formindividual";
+        } else {
+          window.location.href = "https://nirm.uk/formbusiness";
+        }
+      } catch (err) {
+        console.error("Error assigning role:", err);
+        alert("Something went wrong. Please refresh and try again.");
+      }
+    }
+  </script>
 </body>
 </html>
