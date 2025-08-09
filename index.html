@@ -16,25 +16,43 @@
 
     body {
       font-family: 'Bricolage Grotesque', sans-serif;
-      background: linear-gradient(270deg, #001b3e, #004080, #001b3e);
-      background-size: 600% 600%;
-      animation: bgGradientShift 30s ease infinite;
+      background-color: #fffcf0;
+      color: #ffffff;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      color: #ffffff;
+      position: relative;
+      overflow: hidden;
     }
 
-    @keyframes bgGradientShift {
+    /* Minimal NIRM watermark background */
+    body::before {
+      content: "NIRM";
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 18vw;
+      font-weight: 700;
+      color: #001b3e;
+      opacity: 0.05;
+      user-select: none;
+      pointer-events: none;
+      z-index: 0;
+      animation: fadeInOut 12s ease-in-out infinite alternate;
+      letter-spacing: 0.2em;
+    }
+
+    @keyframes fadeInOut {
       0% {
-        background-position: 0% 50%;
+        opacity: 0.03;
       }
       50% {
-        background-position: 100% 50%;
+        opacity: 0.08;
       }
       100% {
-        background-position: 0% 50%;
+        opacity: 0.03;
       }
     }
 
@@ -139,45 +157,40 @@
   </div>
 
   <script>
-    let auth0;
-
-    window.onload = async () => {
-      auth0 = await createAuth0Client({
-        domain: "nirm.uk.auth0.com",
-        client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6",
+    (async () => {
+      const auth0 = await createAuth0Client({
+        domain: 'nirm.uk.auth0.com',
+        client_id: 'nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6',
       });
-    };
 
-    async function handleRoleSelect(role) {
-      try {
-        if (!auth0) {
-          alert("Auth0 not initialized yet. Please wait and try again.");
-          return;
+      window.handleRoleSelect = async function(role) {
+        try {
+          const user = await auth0.getUser();
+          const userId = user.sub;
+
+          await fetch('https://hook.eu2.make.com/pxnp7w4c725m5si7nja45e2da2jl64t1', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              user_id: userId,
+              role: role
+            }),
+          });
+
+          // Redirect user to the appropriate form after role is recorded
+          if (role === "individual") {
+            window.location.href = "https://nirm.uk/formindividual";
+          } else {
+            window.location.href = "https://nirm.uk/formbusiness";
+          }
+        } catch (err) {
+          console.error("Error assigning role:", err);
+          alert(`Something went wrong. Please refresh the page.\nError details: ${err.message || err}`);
         }
-        const user = await auth0.getUser();
-        const userId = user.sub;
-
-        await fetch("https://hook.eu2.make.com/pxnp7w4c725m5si7nja45e2da2jl64t1", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            user_id: userId,
-            role: role
-          }),
-        });
-
-        if (role === "individual") {
-          window.location.href = "https://nirm.uk/formindividual";
-        } else {
-          window.location.href = "https://nirm.uk/formbusiness";
-        }
-      } catch (err) {
-        console.error("Error assigning role:", err);
-        alert("Something went wrong. Please refresh and try again.");
-      }
-    }
+      };
+    })();
   </script>
 </body>
 </html>
