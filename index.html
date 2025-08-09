@@ -16,12 +16,26 @@
 
     body {
       font-family: 'Bricolage Grotesque', sans-serif;
-      background-color: #fffcf0;
-      color: #ffffff;
+      background: linear-gradient(270deg, #001b3e, #004080, #001b3e);
+      background-size: 600% 600%;
+      animation: bgGradientShift 30s ease infinite;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      color: #ffffff;
+    }
+
+    @keyframes bgGradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
     }
 
     .hero-box {
@@ -32,6 +46,8 @@
       width: 90%;
       text-align: center;
       box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 1;
     }
 
     .logo {
@@ -123,21 +139,28 @@
   </div>
 
   <script>
-    const auth0 = await createAuth0Client({
-      domain: nirm.uk.auth0.com,
-      client_id: nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6,
-    });
+    let auth0;
+
+    window.onload = async () => {
+      auth0 = await createAuth0Client({
+        domain: "nirm.uk.auth0.com",
+        client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6",
+      });
+    };
 
     async function handleRoleSelect(role) {
       try {
+        if (!auth0) {
+          alert("Auth0 not initialized yet. Please wait and try again.");
+          return;
+        }
         const user = await auth0.getUser();
         const userId = user.sub;
 
-        await fetch(https://hook.eu2.make.com/pxnp7w4c725m5si7nja45e2da2jl64t1, {
+        await fetch("https://hook.eu2.make.com/pxnp7w4c725m5si7nja45e2da2jl64t1", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
-            // Optional: Add custom secret header here
           },
           body: JSON.stringify({
             user_id: userId,
@@ -145,7 +168,6 @@
           }),
         });
 
-        // Redirect user to the appropriate form after role is recorded
         if (role === "individual") {
           window.location.href = "https://nirm.uk/formindividual";
         } else {
