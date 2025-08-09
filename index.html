@@ -14,76 +14,60 @@
       box-sizing: border-box;
     }
 
-    /* Animate gradient background */
-    @keyframes gradientCycle {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
-      }
-    }
-
     body {
       font-family: 'Bricolage Grotesque', sans-serif;
-      background: linear-gradient(270deg, #001b3e, #002a60, #001b3e);
+      background: linear-gradient(270deg, #001b3e, #003366, #001b3e);
       background-size: 600% 600%;
-      animation: gradientCycle 30s ease infinite;
+      animation: gradientShift 30s ease infinite;
       color: #ffffff;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Top and bottom repeated NIRM text container */
-    .background-announcement {
-      position: fixed;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      pointer-events: none;
-      user-select: none;
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-weight: 700;
-      color: #ffcf0f;
-      font-size: 1.2rem;
-      letter-spacing: 0.25rem;
-      z-index: 0;
-      opacity: 0.3;
-      text-transform: uppercase;
+      flex-direction: column;
+      min-height: 100vh;
       overflow-x: hidden;
+      position: relative;
     }
 
-    .background-announcement.top {
-      top: 0.3rem;
-      padding: 0.25rem 0;
-      gap: 3rem;
+    @keyframes gradientShift {
+      0% {background-position:0% 50%}
+      50% {background-position:100% 50%}
+      100% {background-position:0% 50%}
+    }
+
+    .nirm-banner {
+      width: 100%;
+      background: none;
+      color: #ffcf0a;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+      letter-spacing: 0.1em;
+      user-select: none;
+      padding: 0.3rem 0;
       white-space: nowrap;
-      animation: slideLeft 20s linear infinite;
+      overflow: hidden;
+      position: fixed;
+      left: 0;
+      z-index: 10;
+      animation: scrollText 30s linear infinite;
+      opacity: 0.3;
     }
 
-    .background-announcement.bottom {
-      bottom: 0.3rem;
-      padding: 0.25rem 0;
-      gap: 3rem;
-      white-space: nowrap;
-      animation: slideRight 25s linear infinite;
+    .nirm-banner.top {
+      top: 0;
     }
 
-    @keyframes slideLeft {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+    .nirm-banner.bottom {
+      bottom: 0;
+      animation-direction: reverse;
     }
 
-    @keyframes slideRight {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(50%); }
+    @keyframes scrollText {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
     }
 
     .hero-box {
@@ -93,10 +77,12 @@
       max-width: 600px;
       width: 90%;
       text-align: center;
+      margin: auto;
+      margin-top: 8rem;
+      margin-bottom: 8rem;
       box-shadow: 0 10px 20px rgba(0,0,0,0.2);
       position: relative;
-      z-index: 1;
-      color: #fff;
+      z-index: 5;
     }
 
     .logo {
@@ -104,6 +90,8 @@
       font-weight: bold;
       margin-bottom: 2rem;
       letter-spacing: 1px;
+      color: #fffcf0;
+      user-select: none;
     }
 
     .tagline {
@@ -112,7 +100,7 @@
       overflow: hidden;
       position: relative;
       margin-bottom: 2rem;
-      color: #fff;
+      color: #fffcf0;
     }
 
     .tagline span {
@@ -145,6 +133,7 @@
       cursor: pointer;
       border: none;
       font-family: 'Bricolage Grotesque', sans-serif;
+      user-select: none;
     }
 
     .buttons button:hover {
@@ -154,6 +143,8 @@
     @media (max-width: 500px) {
       .hero-box {
         padding: 2rem 1.5rem;
+        margin-top: 6rem;
+        margin-bottom: 6rem;
       }
 
       .tagline {
@@ -168,17 +159,11 @@
   <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
 </head>
 <body>
-  <!-- Multiple NIRM repeating text at top and bottom -->
-  <div class="background-announcement top">
-    <span>NIRM</span><span>NIRM</span><span>NIRM</span><span>NIRM</span><span>NIRM</span><span>NIRM</span><span>NIRM</span><span>NIRM</span><span>NIRM</span>
-  </div>
-  <div class="background-announcement bottom">
-    <span>NIRM</span><span>NIRM</span><span>NIRM</span><span>NIRM</span><span>NIRM</span><span>NIRM</span><span>NIRM</span><span>NIRM</span><span>NIRM</span>
-  </div>
+  <div class="nirm-banner top">NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</div>
 
-  <div class="hero-box">
-    <div class="logo">NIRM</div>
-    <div class="tagline">
+  <div class="hero-box" role="main" aria-label="Role selection box">
+    <div class="logo" aria-label="NIRM Logo">NIRM</div>
+    <div class="tagline" aria-live="polite">
       <span>
         Connecting You to the Best<br />
         Your Vision, Our Tech<br />
@@ -191,30 +176,49 @@
       </span>
     </div>
     <div class="buttons">
-      <button onclick="handleRoleSelect('individual')">An Individual User</button>
-      <button onclick="handleRoleSelect('business')">A Business Owner</button>
+      <button onclick="handleRoleSelect('individual')" aria-label="Select Individual User Role">An Individual User</button>
+      <button onclick="handleRoleSelect('business')" aria-label="Select Business Owner Role">A Business Owner</button>
     </div>
   </div>
 
-  <script>
-    async function initializeAuth0() {
-      return await createAuth0Client({
-        domain: 'nirm.uk.auth0.com',
-        client_id: 'nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6',
-      });
-    }
+  <div class="nirm-banner bottom">NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</div>
 
-    let auth0;
-    (async () => {
-      auth0 = await initializeAuth0();
-    })();
+  <script>
+    // Initialize Auth0 client with your domain and client id
+    let auth0 = null;
+
+    window.onload = async () => {
+      try {
+        auth0 = await createAuth0Client({
+          domain: "nirm.uk.auth0.com",
+          client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6",
+          cacheLocation: 'localstorage', // optional for persistent login
+          useRefreshTokens: true         // optional for silent refresh
+        });
+      } catch (err) {
+        alert(`Failed to initialize Auth0: ${err.message || err}`);
+        console.error(err);
+      }
+    };
 
     async function handleRoleSelect(role) {
       try {
+        if (!auth0) {
+          alert("Auth system not ready. Please refresh and try again.");
+          return;
+        }
+
         const user = await auth0.getUser();
+
+        if (!user) {
+          alert("You need to log in first! Redirecting to login page...");
+          await auth0.loginWithRedirect();
+          return;
+        }
+
         const userId = user.sub;
 
-        await fetch('https://hook.eu2.make.com/pxnp7w4c725m5si7nja45e2da2jl64t1', {
+        await fetch("https://hook.eu2.make.com/pxnp7w4c725m5si7nja45e2da2jl64t1", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
