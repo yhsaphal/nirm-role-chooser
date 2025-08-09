@@ -36,11 +36,11 @@
     .nirm-banner {
       width: 100%;
       background: none;
-      color: #ffcf0a;
+      color: rgba(255, 207, 10, 0.15); /* lighter gold with transparency */
       font-weight: 600;
       font-size: 1.1rem;
       text-align: center;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.15em;
       user-select: none;
       padding: 0.3rem 0;
       white-space: nowrap;
@@ -48,8 +48,13 @@
       position: fixed;
       left: 0;
       z-index: 10;
-      animation: scrollText 30s linear infinite;
-      opacity: 0.3;
+      animation: scrollText 40s linear infinite;
+      opacity: 0.15;
+      filter: blur(0.8px);
+      
+      /* fade on edges with subtle gradient mask */
+      mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
     }
 
     .nirm-banner.top {
@@ -159,7 +164,9 @@
   <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
 </head>
 <body>
-  <div class="nirm-banner top">NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</div>
+  <div class="nirm-banner top">
+    NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM
+  </div>
 
   <div class="hero-box" role="main" aria-label="Role selection box">
     <div class="logo" aria-label="NIRM Logo">NIRM</div>
@@ -181,7 +188,9 @@
     </div>
   </div>
 
-  <div class="nirm-banner bottom">NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</div>
+  <div class="nirm-banner bottom">
+    NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM
+  </div>
 
   <script>
     // Initialize Auth0 client with your domain and client id
