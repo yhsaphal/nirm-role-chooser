@@ -34,44 +34,44 @@
     }
 
     .nirm-banner {
-      width: 100%;
-      background: none;
-      color: rgba(255, 207, 10, 0.15); /* lighter gold with transparency */
+      position: fixed;
+      width: 200vw; /* super wide to avoid visible start/end */
+      white-space: nowrap;
+      color: #cfcfcf; /* lighter color */
       font-weight: 600;
       font-size: 1.1rem;
       text-align: center;
-      letter-spacing: 0.15em;
       user-select: none;
       padding: 0.3rem 0;
-      white-space: nowrap;
       overflow: hidden;
-      position: fixed;
-      left: 0;
       z-index: 10;
-      animation: scrollText 40s linear infinite;
+      animation: scrollText 30s linear infinite;
       opacity: 0.15;
-      filter: blur(0.8px);
-      
-      /* fade on edges with subtle gradient mask */
-      mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+      pointer-events: none;
+      filter: drop-shadow(0 0 4px rgba(255 255 255 / 0.1));
+      /* fade edges with mask */
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
     }
 
     .nirm-banner.top {
       top: 0;
+      animation-direction: normal;
+      left: -50vw;
     }
 
     .nirm-banner.bottom {
       bottom: 0;
       animation-direction: reverse;
+      left: -50vw;
     }
 
     @keyframes scrollText {
       0% {
-        transform: translateX(100%);
+        transform: translateX(0);
       }
       100% {
-        transform: translateX(-100%);
+        transform: translateX(-50%);
       }
     }
 
@@ -164,9 +164,7 @@
   <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
 </head>
 <body>
-  <div class="nirm-banner top">
-    NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM
-  </div>
+  <div class="nirm-banner top">NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</div>
 
   <div class="hero-box" role="main" aria-label="Role selection box">
     <div class="logo" aria-label="NIRM Logo">NIRM</div>
@@ -188,9 +186,7 @@
     </div>
   </div>
 
-  <div class="nirm-banner bottom">
-    NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM
-  </div>
+  <div class="nirm-banner bottom">NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</div>
 
   <script>
     // Initialize Auth0 client with your domain and client id
