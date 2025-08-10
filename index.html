@@ -213,13 +213,17 @@
           return;
         }
 
-        const user = await auth0.getUser();
+        const isAuthenticated = await auth0.isAuthenticated();
+        console.log("Is authenticated?", isAuthenticated);
 
-        if (!user) {
+        if (!isAuthenticated) {
           alert("You need to log in first! Redirecting to login page...");
           await auth0.loginWithRedirect();
           return;
         }
+
+        const user = await auth0.getUser();
+        console.log("User data:", user);
 
         const userId = user.sub;
 
