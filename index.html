@@ -189,7 +189,6 @@
   <div class="nirm-banner bottom">NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</div>
 
   <script>
-    // Initialize Auth0 client with your domain and client id
     let auth0 = null;
 
     window.onload = async () => {
@@ -197,9 +196,27 @@
         auth0 = await createAuth0Client({
           domain: "nirm.uk.auth0.com",
           client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6",
-          cacheLocation: 'localstorage', // optional for persistent login
-          useRefreshTokens: true         // optional for silent refresh
+          cacheLocation: 'localstorage',
+          useRefreshTokens: true
         });
+
+        // Handle redirect callback after login
+        if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
+          try {
+            await auth0.handleRedirectCallback();
+            // Clean URL params after handling
+            window.history.replaceState({}, document.title, "/");
+          } catch (err) {
+            console.error("Error handling redirect callback:", err);
+          }
+        }
+
+        const isAuthenticated = await auth0.isAuthenticated();
+        console.log("Is authenticated on load?", isAuthenticated);
+
+        if (!isAuthenticated) {
+          console.warn("User not logged in yet on page load");
+        }
       } catch (err) {
         alert(`Failed to initialize Auth0: ${err.message || err}`);
         console.error(err);
