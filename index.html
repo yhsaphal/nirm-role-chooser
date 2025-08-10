@@ -35,9 +35,9 @@
 
     .nirm-banner {
       position: fixed;
-      width: 200vw; /* super wide to avoid visible start/end */
+      width: 200vw;
       white-space: nowrap;
-      color: #cfcfcf; /* lighter color */
+      color: #cfcfcf;
       font-weight: 600;
       font-size: 1.1rem;
       text-align: center;
@@ -49,7 +49,6 @@
       opacity: 0.15;
       pointer-events: none;
       filter: drop-shadow(0 0 4px rgba(255 255 255 / 0.1));
-      /* fade edges with mask */
       -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
       mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
     }
@@ -67,12 +66,8 @@
     }
 
     @keyframes scrollText {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(-50%);
-      }
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
 
     .hero-box {
@@ -200,11 +195,9 @@
           useRefreshTokens: true
         });
 
-        // Handle redirect callback after login
         if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
           try {
             await auth0.handleRedirectCallback();
-            // Clean URL params after handling
             window.history.replaceState({}, document.title, "/");
           } catch (err) {
             console.error("Error handling redirect callback:", err);
@@ -231,8 +224,6 @@
         }
 
         const isAuthenticated = await auth0.isAuthenticated();
-        console.log("Is authenticated?", isAuthenticated);
-
         if (!isAuthenticated) {
           alert("You need to log in first! Redirecting to login page...");
           await auth0.loginWithRedirect();
@@ -240,21 +231,37 @@
         }
 
         const user = await auth0.getUser();
-        console.log("User data:", user);
-
         const userId = user.sub;
 
-        await fetch("https://hook.eu2.make.com/a5bh5r6z4cj8b7ydft7i2ffhmyso4dpy", {
+        // 1. Update role in Auth0 via Make webhook
+        let response = await fetch("https://hook.eu2.make.com/a5bh5r6z4cj8b7ydft7i2ffhmyso4dpy", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            user_id: userId,
-            role: role
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userId, role })
         });
 
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Role webhook error:", errorText);
+          alert("Failed to update role. Please try again later.");
+          return;
+        }
+
+        // 2. Setup user data in Airtable via Make webhook
+        response = await fetch("https://hook.eu2.make.com/pxnp7w4c725m5si7nja45e2da2jl64t1", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userId, role })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Airtable webhook error:", errorText);
+          // Optional: continue even if Airtable fails
+          console.warn("Airtable setup failed, but continuing...");
+        }
+
+        // Redirect user based on role
         if (role === "individual") {
           window.location.href = "https://nirm.uk/formindividual";
         } else {
