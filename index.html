@@ -205,14 +205,14 @@
         }
 
         const isAuthenticated = await auth0.isAuthenticated();
+        console.log("Is authenticated on load?", isAuthenticated);
 
         if (!isAuthenticated) {
-          window.location.href = "https://nirm.uk";
-          return;
+          console.warn("User not logged in yet on page load");
         }
       } catch (err) {
-        console.error("Auth0 init error:", err);
-        window.location.href = "https://nirm.uk";
+        alert(`Failed to initialize Auth0: ${err.message || err}`);
+        console.error(err);
       }
     };
 
@@ -225,56 +225,54 @@
 
         const isAuthenticated = await auth0.isAuthenticated();
         if (!isAuthenticated) {
-          // This is unlikely now due to forced redirect, but just in case
-          window.location.href = "https://nirm.uk";
+          alert("You need to log in first! Redirecting to login page...");
+          await auth0.loginWithRedirect();
           return;
         }
 
         const user = await auth0.getUser();
         const userId = user.sub;
 
-        // Update role in Auth0 via Make webhook
+        // 1. Update role in Auth0 via Make webhook
         let response = await fetch("https://hook.eu2.make.com/a5bh5r6z4cj8b7ydft7i2ffhmyso4dpy", {
           method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "x-chab": "your-super-secret-chab-value"  // Your secret header to secure webhook calls
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ user_id: userId, role })
         });
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error("Role webhook error:", errorText);
-          alert("Failed to update role. Please try again later.");
+          alert("Failed to update role: " + errorText + "\nRedirecting to homepage...");
+          setTimeout(() => {
+            window.location.href = "https://nirm.uk";
+          }, 3000);
           return;
         }
 
-        // Setup user data in Airtable via Make webhook
+        // 2. Setup user data in Airtable via Make webhook
         response = await fetch("https://hook.eu2.make.com/pxnp7w4c725m5si7nja45e2da2jl64t1", {
           method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "x-chab": "your-super-secret-chab-value"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ user_id: userId, role })
         });
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error("Airtable webhook error:", errorText);
-          // Optional: continue even if Airtable fails
-          console.warn("Airtable setup failed, but continuing...");
+          console.warn("Airtable setup failed: " + errorText);
+          // Continue, no redirect here because Airtable failure is not critical for role setting
         }
 
+        // Redirect user based on role
         if (role === "individual") {
           window.location.href = "https://nirm.uk/formindividual";
         } else {
           window.location.href = "https://nirm.uk/formbusiness";
         }
       } catch (err) {
-        console.error("Error assigning role:", err);
-        alert(`Something went wrong. Please refresh the page.\nError details: ${err.message || err}`);
+        alert("Something went wrong: " + (err.message || err) + "\nRedirecting to homepage...");
+        setTimeout(() => {
+          window.location.href = "https://nirm.uk";
+        }, 3000);
       }
     }
   </script>
