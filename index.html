@@ -3,278 +3,135 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex" />
-  <title>NIRM Hero Box</title>
+  <title>NIRM Role Selection</title>
+
+  <!-- Bricolage Grotesque font -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet" />
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       font-family: 'Bricolage Grotesque', sans-serif;
-      background: linear-gradient(270deg, #001b3e, #003366, #001b3e);
-      background-size: 600% 600%;
-      animation: gradientShift 30s ease infinite;
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    @keyframes gradientShift {
-      0% {background-position:0% 50%}
-      50% {background-position:100% 50%}
-      100% {background-position:0% 50%}
-    }
-
-    .nirm-banner {
-      position: fixed;
-      width: 200vw;
-      white-space: nowrap;
-      color: #cfcfcf;
-      font-weight: 600;
-      font-size: 1.1rem;
-      text-align: center;
-      user-select: none;
-      padding: 0.3rem 0;
-      overflow: hidden;
-      z-index: 10;
-      animation: scrollText 30s linear infinite;
-      opacity: 0.15;
-      pointer-events: none;
-      filter: drop-shadow(0 0 4px rgba(255 255 255 / 0.1));
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
-      mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
-    }
-
-    .nirm-banner.top {
-      top: 0;
-      animation-direction: normal;
-      left: -50vw;
-    }
-
-    .nirm-banner.bottom {
-      bottom: 0;
-      animation-direction: reverse;
-      left: -50vw;
-    }
-
-    @keyframes scrollText {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    .hero-box {
-      background-color: #001b3e;
-      padding: 3rem 2rem;
-      border-radius: 20px;
-      max-width: 600px;
-      width: 90%;
-      text-align: center;
-      margin: auto;
-      margin-top: 8rem;
-      margin-bottom: 8rem;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-      position: relative;
-      z-index: 5;
-    }
-
-    .logo {
-      font-size: 3rem;
-      font-weight: bold;
-      margin-bottom: 2rem;
-      letter-spacing: 1px;
-      color: #fffcf0;
-      user-select: none;
-    }
-
-    .tagline {
-      font-size: 1.25rem;
-      height: 2rem;
-      overflow: hidden;
-      position: relative;
-      margin-bottom: 2rem;
-      color: #fffcf0;
-    }
-
-    .tagline span {
-      display: inline-block;
-      animation: loopTaglines 32s steps(8) infinite;
-      white-space: nowrap;
-      line-height: 2rem;
-    }
-
-    @keyframes loopTaglines {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-16rem); }
-    }
-
-    .buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .buttons button {
-      text-decoration: none;
-      background-color: #ffffff;
+      background-color: #fffcf0;
       color: #001b3e;
-      padding: 0.9rem 1.5rem;
-      border-radius: 30px;
-      font-weight: 600;
-      transition: background-color 0.3s ease;
-      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      font-weight: 700;
+    }
+    button {
+      font-size: 1.6rem;
+      margin: 1rem 1.5rem;
+      padding: 1.25rem 3rem;
       border: none;
-      font-family: 'Bricolage Grotesque', sans-serif;
+      border-radius: 12px;
+      background-color: #001b3e;
+      color: #fffcf0;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 27, 62, 0.2);
       user-select: none;
     }
-
-    .buttons button:hover {
-      background-color: #d6d6d6;
+    button:hover,
+    button:focus {
+      background-color: #004080;
+      outline: none;
     }
-
-    @media (max-width: 500px) {
-      .hero-box {
-        padding: 2rem 1.5rem;
-        margin-top: 6rem;
-        margin-bottom: 6rem;
-      }
-
-      .tagline {
-        font-size: 1rem;
-      }
-
-      .logo {
-        font-size: 2.2rem;
-      }
+    #loading {
+      margin-top: 1.5rem;
+      font-style: italic;
+      color: #555;
+      display: none;
+    }
+    #error {
+      margin-top: 1.5rem;
+      color: #d32f2f;
+      font-weight: 600;
+      display: none;
+      max-width: 300px;
     }
   </style>
-  <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
 </head>
 <body>
-  <div class="nirm-banner top">NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</div>
-
-  <div class="hero-box" role="main" aria-label="Role selection box">
-    <div class="logo" aria-label="NIRM Logo">NIRM</div>
-    <div class="tagline" aria-live="polite">
-      <span>
-        Connecting You to the Best<br />
-        Your Vision, Our Tech<br />
-        Your Event, Your Way<br />
-        Built for You<br />
-        Powered by SapphireAI, Backed by OpenAI<br />
-        The Clear Path for Seamless Execution<br />
-        Your Sourcing Solution<br />
-        Where Events Meet Innovation
-      </span>
-    </div>
-    <div class="buttons">
-      <button onclick="handleRoleSelect('individual')" aria-label="Select Individual User Role">An Individual User</button>
-      <button onclick="handleRoleSelect('business')" aria-label="Select Business Owner Role">A Business Owner</button>
-    </div>
+  <h1>Select Your Role</h1>
+  <div>
+    <button id="individualBtn" aria-label="Select Individual role">Individual</button>
+    <button id="businessBtn" aria-label="Select Business role">Business</button>
   </div>
 
-  <div class="nirm-banner bottom">NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</div>
+  <div id="loading">Updating role, please wait...</div>
+  <div id="error" role="alert"></div>
 
   <script>
-    let auth0 = null;
+    // Your Make.com webhook URL (replace with your actual secure webhook)
+    const WEBHOOK_URL = 'https://hook.us1.make.com/your-secure-webhook-id';
 
-    window.onload = async () => {
-      try {
-        auth0 = await createAuth0Client({
-          domain: "nirm.uk.auth0.com",
-          client_id: "nPJ9Ks5rLkanZ4D6C3Qud5gu5vIkopm6",
-          cacheLocation: 'localstorage',
-          useRefreshTokens: true
-        });
+    // Grab token from localStorage (adjust if you store it differently)
+    const authToken = localStorage.getItem('auth_token');
 
-        if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
-          try {
-            await auth0.handleRedirectCallback();
-            window.history.replaceState({}, document.title, "/");
-          } catch (err) {
-            console.error("Error handling redirect callback:", err);
-          }
-        }
+    const loadingEl = document.getElementById('loading');
+    const errorEl = document.getElementById('error');
 
-        const isAuthenticated = await auth0.isAuthenticated();
-        console.log("Is authenticated on load?", isAuthenticated);
-
-        if (!isAuthenticated) {
-          console.warn("User not logged in yet on page load");
-        }
-      } catch (err) {
-        alert(`Failed to initialize Auth0: ${err.message || err}`);
-        console.error(err);
-      }
-    };
-
-    async function handleRoleSelect(role) {
-      try {
-        if (!auth0) {
-          alert("Auth system not ready. Please refresh and try again.");
-          return;
-        }
-
-        const isAuthenticated = await auth0.isAuthenticated();
-        if (!isAuthenticated) {
-          alert("You need to log in first! Redirecting to login page...");
-          await auth0.loginWithRedirect();
-          return;
-        }
-
-        const user = await auth0.getUser();
-        const userId = user.sub;
-
-        // 1. Update role in Auth0 via Make webhook
-        let response = await fetch("https://hook.eu2.make.com/a5bh5r6z4cj8b7ydft7i2ffhmyso4dpy", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: userId, role })
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          alert("Failed to update role: " + errorText + "\nRedirecting to homepage...");
-          setTimeout(() => {
-            window.location.href = "https://nirm.uk";
-          }, 3000);
-          return;
-        }
-
-        // 2. Setup user data in Airtable via Make webhook
-        response = await fetch("https://hook.eu2.make.com/pxnp7w4c725m5si7nja45e2da2jl64t1", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: userId, role })
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.warn("Airtable setup failed: " + errorText);
-          // Continue, no redirect here because Airtable failure is not critical for role setting
-        }
-
-        // Redirect user based on role
-        if (role === "individual") {
-          window.location.href = "https://nirm.uk/formindividual";
-        } else {
-          window.location.href = "https://nirm.uk/formbusiness";
-        }
-      } catch (err) {
-        alert("Something went wrong: " + (err.message || err) + "\nRedirecting to homepage...");
-        setTimeout(() => {
-          window.location.href = "https://nirm.uk";
-        }, 3000);
-      }
+    function showLoading(show) {
+      loadingEl.style.display = show ? 'block' : 'none';
     }
+    function showError(message) {
+      errorEl.textContent = message;
+      errorEl.style.display = message ? 'block' : 'none';
+    }
+
+    // If no token, block the page with error
+    if (!authToken) {
+      showError('You are not authenticated. Please log in again.');
+      // Optionally redirect to login page after few seconds:
+      // setTimeout(() => window.location.href = 'https://nirm.uk/login', 4000);
+    }
+
+    function updateRole(role) {
+      if (!authToken) return;
+
+      showError('');
+      showLoading(true);
+
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({ role })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error(`Server error (${res.status})`);
+        return res.json();
+      })
+      .then(data => {
+        showLoading(false);
+        // Redirect based on role
+        if (role === 'individual') {
+          window.location.href = 'https://sapphire.nirm.uk';
+        } else if (role === 'business') {
+          window.location.href = 'https://business.nirm.uk';
+        } else {
+          showError('Unexpected role selected.');
+        }
+      })
+      .catch(err => {
+        showLoading(false);
+        showError(`Failed to update role: ${err.message}`);
+      });
+    }
+
+    document.getElementById('individualBtn').addEventListener('click', () => updateRole('individual'));
+    document.getElementById('businessBtn').addEventListener('click', () => updateRole('business'));
   </script>
 </body>
 </html>
