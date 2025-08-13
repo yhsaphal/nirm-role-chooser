@@ -4,12 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
 <title>Select Your Role - NIRM</title>
 
-<!-- Bricolage Grotesque font -->
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet" />
 
 <style>
@@ -20,7 +16,9 @@
     background-size: 400% 400%;
     animation: gradientBG 30s ease infinite;
     color: #001b3e;
-    overflow-x: hidden;
+    display:flex; justify-content:center; align-items:center;
+    flex-direction:column;
+    min-height:100vh; overflow-x:hidden;
   }
 
   @keyframes gradientBG {
@@ -29,7 +27,7 @@
     100% {background-position:0% 50%;}
   }
 
-  /* Banner marquee styles */
+  /* Banner marquee */
   .nirm-banner {
     position: relative;
     white-space: nowrap;
@@ -40,65 +38,67 @@
     color: #fffcf0;
     text-transform: uppercase;
     letter-spacing: 2px;
+    width:100%;
   }
   .nirm-banner::before,
   .nirm-banner::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    width: 5rem; height: 100%;
-    z-index: 2;
+    content:'';
+    position:absolute;
+    top:0;
+    width:5rem; height:100%;
+    z-index:2;
   }
   .nirm-banner::before { left:0; background:linear-gradient(to right,#001b3e,transparent);}
   .nirm-banner::after { right:0; background:linear-gradient(to left,#001b3e,transparent);}
   .nirm-banner span {
-    display: inline-block;
-    padding-left: 100%;
-    animation: marquee 15s linear infinite;
+    display:inline-block;
+    padding-left:100%;
+    animation: marquee 30s linear infinite;
   }
-  @keyframes marquee { 0%{transform:translateX(0);} 100%{transform:translateX(-100%);} }
+  .nirm-banner span:hover { animation-play-state:paused; }
+  @keyframes marquee { 0% {transform:translateX(0);} 100% {transform:translateX(-100%);} }
 
   /* Hero box */
   .hero-box {
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    text-align:center;
-    margin:2rem auto;
-    padding:2rem 3rem;
-    border-radius:20px;
-    background: #001b3e;
-    color:#fffcf0;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-    perspective:1000px;
-    transform-style: preserve-3d;
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    padding:1.2rem 1.8rem; border-radius:20px;
+    background:#001b3e; color:#fffcf0;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    perspective:1000px; transform-style:preserve-3d;
     transition: transform 0.5s ease;
+    max-width:360px;
+    width:90%;
   }
   .hero-box:hover { transform: rotateY(5deg) rotateX(3deg); }
 
-  .hero-box .logo { font-size:3rem; font-weight:bold; margin-bottom:1rem; }
-  .hero-box .tagline { font-size:1.3rem; line-height:1.5; min-height:8em; }
-  .role-buttons { margin-top:2rem; }
+  .hero-box .logo { font-size:2.5rem; font-weight:bold; margin-bottom:0.8rem; }
+  .hero-box .tagline { font-size:1.1rem; line-height:1.5; min-height:6em; }
+
+  .role-buttons { margin-top:1.5rem; }
   .role-buttons button {
-    font-size:1.4rem; margin:0.5rem; padding:1rem 2.5rem;
+    font-size:1.3rem; margin:0.4rem; padding:0.9rem 2rem;
     border:none; border-radius:10px;
     background-color:#fffcf0; color:#001b3e;
     cursor:pointer; box-shadow:0 5px 15px rgba(0,0,0,0.3);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
   .role-buttons button:hover {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
     box-shadow:0 10px 25px rgba(0,0,0,0.4);
   }
 
-  /* Overlay for timeout */
+  /* Timeout overlay hidden by default */
   #timeoutOverlay {
-    display: none;
-    position: fixed;
-    top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.85);
-    color:#fffcf0;
-    font-size:2rem;
-    display:flex; align-items:center; justify-content:center;
+    display:none;
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.85); color:#fffcf0;
+    font-size:2rem; display:flex; align-items:center; justify-content:center;
     z-index:9999; text-align:center; padding:1rem;
+  }
+
+  /* Bottom banner fix */
+  .bottom-banner-container {
+    position:fixed; bottom:0; width:100%; z-index:100;
   }
 </style>
 </head>
@@ -120,8 +120,10 @@
 </div>
 
 <!-- Bottom Banner -->
-<div class="nirm-banner bottom">
-  <span>NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</span>
+<div class="bottom-banner-container">
+  <div class="nirm-banner bottom">
+    <span>NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</span>
+  </div>
 </div>
 
 <div id="timeoutOverlay">⏳ Time limit exceeded. Returning to home page...</div>
