@@ -17,32 +17,91 @@
       font-family: 'Bricolage Grotesque', sans-serif;
       background-color: #fffcf0;
       color: #001b3e;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* Banner marquee styles */
+    .nirm-banner {
+      position: relative;
+      white-space: nowrap;
+      overflow: hidden;
+      font-size: 1.4rem;
+      padding: 0.5rem 0;
+      background-color: #001b3e;
+      color: #fffcf0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .nirm-banner::before,
+    .nirm-banner::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 5rem;
+      height: 100%;
+      z-index: 2;
+    }
+    .nirm-banner::before {
+      left: 0;
+      background: linear-gradient(to right, #001b3e, transparent);
+    }
+    .nirm-banner::after {
+      right: 0;
+      background: linear-gradient(to left, #001b3e, transparent);
+    }
+    .nirm-banner span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 20s linear infinite;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-100%); }
+    }
+
+    /* Hero box styles */
+    .hero-box {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      margin: 0;
-      padding: 2rem;
+      padding: 3rem 1rem;
       text-align: center;
     }
-    h1 { font-size: 2.5rem; margin-bottom: 2rem; }
-    button {
-      font-size: 1.6rem;
-      margin: 1rem;
-      padding: 1rem 3rem;
+    .hero-box .logo {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .hero-box .tagline span {
+      font-size: 1.2rem;
+      line-height: 1.5;
+      display: block;
+    }
+
+    /* Buttons */
+    .role-buttons {
+      margin-top: 2rem;
+    }
+    .role-buttons button {
+      font-size: 1.4rem;
+      margin: 0.5rem;
+      padding: 1rem 2.5rem;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       background-color: #001b3e;
       color: #fffcf0;
       cursor: pointer;
       transition: background-color 0.3s ease;
       box-shadow: 0 4px 8px rgba(0, 27, 62, 0.2);
-      user-select: none;
     }
-    button:hover { background-color: #004080; }
-    #loading { margin-top: 1rem; font-style: italic; color: #555; display: none; }
-    #error { margin-top: 1rem; color: #d32f2f; font-weight: bold; display: none; }
+    .role-buttons button:hover {
+      background-color: #004080;
+    }
+
+    /* Overlay for timeout */
     #timeoutOverlay {
       display: none;
       position: fixed;
@@ -61,50 +120,55 @@
   </style>
 </head>
 <body>
-  <h1>Select Your Role</h1>
-  <div>
-    <button id="individual-btn">Individual</button>
-    <button id="business-btn">Business</button>
+
+  <!-- Top Banner -->
+  <div class="nirm-banner top">
+    <span>NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</span>
   </div>
-  <div id="loading">Updating role, please wait...</div>
-  <div id="error"></div>
+
+  <!-- Hero Section -->
+  <div class="hero-box" role="main" aria-label="Role selection box">
+    <div class="logo" aria-label="NIRM Logo">NIRM</div>
+    <div class="tagline" aria-live="polite">
+      <span>
+        Connecting You to the Best<br />
+        Your Vision, Our Tech<br />
+        Your Event, Your Way<br />
+        Built for You<br />
+        Powered by SapphireAI, Backed by OpenAI<br />
+        The Clear Path for Seamless Execution<br />
+        Your Sourcing Solution<br />
+        Where Events Meet Innovation
+      </span>
+    </div>
+    <div class="role-buttons">
+      <button id="individual-btn">Individual</button>
+      <button id="business-btn">Business</button>
+    </div>
+  </div>
+
+  <!-- Bottom Banner -->
+  <div class="nirm-banner bottom">
+    <span>NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</span>
+  </div>
+
+  <!-- Timeout Overlay -->
   <div id="timeoutOverlay">⏳ Time limit exceeded. Returning to home page...</div>
 
   <script>
-    // ==== Config ====
-    const WEBHOOK_URL = 'https://hook.us1.make.com/your-secure-webhook-id'; // Replace with your webhook
+    const WEBHOOK_URL = 'https://hook.us1.make.com/your-secure-webhook-id';
     const AUTH_TOKEN = localStorage.getItem('auth_token');
     const INDIVIDUAL_FORM = "https://nirm.uk/formindividual";
     const BUSINESS_FORM = "https://nirm.uk/formbusiness";
     const HOME_PAGE = "https://nirm.uk";
-    const TIME_LIMIT = 2 * 60 * 1000; // 2 minutes
-
-    const loadingEl = document.getElementById('loading');
-    const errorEl = document.getElementById('error');
     const timeoutOverlay = document.getElementById('timeoutOverlay');
 
-    function showLoading(show){ loadingEl.style.display = show ? 'block':'none'; }
-    function showError(msg){ errorEl.textContent = msg; errorEl.style.display = msg ? 'block':'none'; }
-
-    // ==== Anti-View Source basic deterrent ====
-    document.addEventListener('keydown', function(e) {
-      if(e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
-        e.preventDefault(); alert("DevTools disabled on this page.");
-      }
-    });
-
-    // ==== Auth0 token check ====
-    if(!AUTH_TOKEN){
-      showError("Authentication missing. Redirecting to home...");
-      setTimeout(()=> window.location.href = HOME_PAGE, 2500);
-    }
-
-    // ==== Role selection ====
     function updateRole(role){
-      if(!AUTH_TOKEN) return;
-      showError(''); showLoading(true);
-
-      fetch(WEBHOOK_URL,{
+      if(!AUTH_TOKEN){
+        alert("Authentication missing. Redirecting to home...");
+        return window.location.href = HOME_PAGE;
+      }
+      fetch(WEBHOOK_URL, {
         method:'POST',
         headers:{
           'Content-Type':'application/json',
@@ -112,28 +176,24 @@
         },
         body: JSON.stringify({role})
       })
-      .then(res=>{
-        if(!res.ok) throw new Error(`Server error (${res.status})`);
-        return res.json();
-      })
-      .then(()=>{
-        showLoading(false);
-        window.location.href = (role==='individual')? INDIVIDUAL_FORM : BUSINESS_FORM;
+      .then(()=> {
+        window.location.href = (role==='individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
       })
       .catch(err=>{
-        showLoading(false);
-        showError(`Failed to update role: ${err.message}`);
+        alert(`Failed to update role: ${err.message}`);
       });
     }
 
     document.getElementById('individual-btn').addEventListener('click', ()=> updateRole('individual'));
     document.getElementById('business-btn').addEventListener('click', ()=> updateRole('business'));
 
-    // ==== Hidden 2-minute timeout ====
+    // --- Timer (commented for design preview) ---
+    /*
     setTimeout(()=>{
       timeoutOverlay.style.display = "flex";
-      setTimeout(()=> window.location.href = HOME_PAGE, 3000); // 3 seconds for message
-    }, TIME_LIMIT);
+      setTimeout(()=> window.location.href = HOME_PAGE, 3000);
+    }, 2 * 60 * 1000);
+    */
   </script>
 </body>
 </html>
