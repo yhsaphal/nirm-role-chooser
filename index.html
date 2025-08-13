@@ -2,21 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex, noydir" />
-  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
-  <meta name="bingbot" content="noindex, nofollow" />
-  <meta name="msnbot" content="noindex, nofollow" />
-  <meta name="slurp" content="noindex, nofollow" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NIRM Role Selection</title>
-
-  <!-- Bricolage Grotesque font -->
+  <title>NIRM Individual Signup</title>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet" />
-
   <style>
     body {
       font-family: 'Bricolage Grotesque', sans-serif;
@@ -26,121 +15,76 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
-      text-align: center;
       padding: 2rem;
+      text-align: center;
     }
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 2rem;
-      font-weight: 700;
+    h1 { font-size: 2.5rem; margin-bottom: 2rem; }
+    form { display: flex; flex-direction: column; gap: 1rem; max-width: 400px; width: 100%; }
+    input, select {
+      padding: 1rem; font-size: 1rem; border-radius: 8px; border: 1px solid #001b3e;
     }
     button {
-      font-size: 1.6rem;
-      margin: 1rem 1.5rem;
-      padding: 1.25rem 3rem;
-      border: none;
-      border-radius: 12px;
-      background-color: #001b3e;
-      color: #fffcf0;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0, 27, 62, 0.2);
-      user-select: none;
+      padding: 1rem; font-size: 1.2rem; border: none; border-radius: 12px; background-color: #001b3e; color: #fffcf0; cursor: pointer;
+      transition: background-color 0.3s ease; box-shadow: 0 4px 8px rgba(0, 27, 62, 0.2);
     }
-    button:hover,
-    button:focus {
-      background-color: #004080;
-      outline: none;
-    }
-    #loading {
-      margin-top: 1.5rem;
-      font-style: italic;
-      color: #555;
-      display: none;
-    }
-    #error {
-      margin-top: 1.5rem;
-      color: #d32f2f;
-      font-weight: 600;
-      display: none;
-      max-width: 300px;
-    }
+    button:hover { background-color: #004080; }
+    #loading { font-style: italic; color: #555; display: none; margin-top: 1rem; }
+    #error { color: #d32f2f; font-weight: 600; display: none; margin-top: 1rem; }
   </style>
 </head>
 <body>
-  <h1>Select Your Role</h1>
-  <div>
-    <button id="individualBtn" aria-label="Select Individual role">Individual</button>
-    <button id="businessBtn" aria-label="Select Business role">Business</button>
-  </div>
-
-  <div id="loading">Updating role, please wait...</div>
-  <div id="error" role="alert"></div>
+  <h1>Complete Your Signup</h1>
+  <form id="signupForm">
+    <input type="text" name="fullName" placeholder="Full Name" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="tel" name="phone" placeholder="Phone (optional)" />
+    <!-- You can add more fields as needed -->
+    <button type="submit">Submit</button>
+  </form>
+  <div id="loading">Submitting your info...</div>
+  <div id="error"></div>
 
   <script>
-    // Your Make.com webhook URL (replace with your actual secure webhook)
     const WEBHOOK_URL = 'https://hook.us1.make.com/your-secure-webhook-id';
-
-    // Grab token from localStorage (adjust if you store it differently)
     const authToken = localStorage.getItem('auth_token');
-
+    const form = document.getElementById('signupForm');
     const loadingEl = document.getElementById('loading');
     const errorEl = document.getElementById('error');
 
-    function showLoading(show) {
-      loadingEl.style.display = show ? 'block' : 'none';
-    }
-    function showError(message) {
-      errorEl.textContent = message;
-      errorEl.style.display = message ? 'block' : 'none';
-    }
+    function showLoading(show) { loadingEl.style.display = show ? 'block' : 'none'; }
+    function showError(msg) { errorEl.textContent = msg; errorEl.style.display = msg ? 'block' : 'none'; }
 
-    // If no token, block the page with error
     if (!authToken) {
-      showError('You are not authenticated. Please log in again.');
-      // Optionally redirect to login page after few seconds:
-      // setTimeout(() => window.location.href = 'https://nirm.uk/login', 4000);
+      showError('Authentication missing. Please log in again.');
+      // Optional redirect: setTimeout(() => window.location.href='https://nirm.uk/login', 4000);
     }
 
-    function updateRole(role) {
-      if (!authToken) return;
-
+    form.addEventListener('submit', e => {
+      e.preventDefault();
       showError('');
       showLoading(true);
 
+      const formData = Object.fromEntries(new FormData(form).entries());
+      formData.role = 'individual'; // Change to 'business' on /formbusiness
+
       fetch(WEBHOOK_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
-        },
-        body: JSON.stringify({ role })
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+        body: JSON.stringify(formData)
       })
-      .then(res => {
-        if (!res.ok) throw new Error(`Server error (${res.status})`);
-        return res.json();
-      })
-      .then(data => {
+      .then(res => { if (!res.ok) throw new Error(`Server error (${res.status})`); return res.json(); })
+      .then(() => {
         showLoading(false);
-        // Redirect based on role
-        if (role === 'individual') {
-          window.location.href = 'https://sapphire.nirm.uk';
-        } else if (role === 'business') {
-          window.location.href = 'https://business.nirm.uk';
-        } else {
-          showError('Unexpected role selected.');
-        }
+        // Redirect to final dashboard
+        window.location.href = '/dashboard-individual'; // Change to '/dashboard-business' on business page
       })
       .catch(err => {
         showLoading(false);
-        showError(`Failed to update role: ${err.message}`);
+        showError(`Failed to submit: ${err.message}`);
       });
-    }
-
-    document.getElementById('individualBtn').addEventListener('click', () => updateRole('individual'));
-    document.getElementById('businessBtn').addEventListener('click', () => updateRole('business'));
+    });
   </script>
 </body>
 </html>
