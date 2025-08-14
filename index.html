@@ -81,19 +81,6 @@ body {
   box-shadow:0 10px 25px rgba(0,0,0,0.4);
 }
 
-#timeoutOverlay {
-  display: flex;
-  position: fixed; top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.85);
-  color: #fffcf0;
-  font-size: 2rem;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  text-align: center;
-  padding: 1rem;
-}
-
 .nirm-banner.top {
   position: fixed;
   top: 0;
@@ -129,8 +116,8 @@ body {
   <div class="logo" aria-label="NIRM Logo">NIRM</div>
   <div class="tagline" aria-live="polite" id="teleprompter"></div>
   <div class="role-buttons">
-    <button id="individual-btn">Individual</button>
-    <button id="business-btn">Business</button>
+    <button id="individual-btn" aria-label="Sign up as an Individual">Individual</button>
+    <button id="business-btn" aria-label="Sign up as a Business">Business</button>
   </div>
 </div>
 
@@ -140,13 +127,14 @@ body {
   </div>
 </div>
 
-
 <script>
 const WEBHOOK_URL = 'https://hook.eu2.make.com/bw7t9bh97mlu13t0cvxw2fy2wfo3vgti';
 const AUTH_TOKEN = localStorage.getItem('auth_token');
 const INDIVIDUAL_FORM = "https://nirm.uk/formindividual";
 const BUSINESS_FORM = "https://nirm.uk/formbusiness";
 const HOME_PAGE = "https://nirm.uk";
+
+// Tagline teleprompter
 const TAGLINE_LINES = [
   "Connecting You to the Best",
   "Your Vision, Our Tech",
@@ -157,34 +145,55 @@ const TAGLINE_LINES = [
   "Your Sourcing Solution",
   "Where Events Meet Innovation"
 ];
-const TIME_LIMIT = 2*60*1000;
 const teleprompter = document.getElementById("teleprompter");
-const lineDuration = TIME_LIMIT / TAGLINE_LINES.length;
 let currentLine = 0;
-function showLine(){
+const TIME_LIMIT = 2 * 60 * 1000;
+const lineDuration = TIME_LIMIT / TAGLINE_LINES.length;
+
+function showLine() {
   teleprompter.textContent = TAGLINE_LINES[currentLine];
-  currentLine = (currentLine+1)%TAGLINE_LINES.length;
-  setTimeout(showLine,lineDuration);
+  currentLine = (currentLine + 1) % TAGLINE_LINES.length;
+  setTimeout(showLine, lineDuration);
 }
 showLine();
 
-function updateRole(role){
-  if(!AUTH_TOKEN){ alert("Authentication missing. Redirecting to home..."); return window.location.href=HOME_PAGE; }
-  fetch(WEBHOOK_URL,{
-    method:'POST',
-    headers:{ 'Content-Type':'application/json','Authorization':`Bearer ${AUTH_TOKEN}` },
-    body: JSON.stringify({role})
-  }).then(()=> {
-    window.location.href = (role==='individual')?INDIVIDUAL_FORM:BUSINESS_FORM;
-  }).catch(err=>{ alert(`Failed to update role: ${err.message}`); });
+// Prevent returning users from re-choosing role
+const existingRole = localStorage.getItem('user_role');
+if (existingRole) {
+  window.location.href = HOME_PAGE; // or dashboard if applicable
 }
-document.getElementById('individual-btn').addEventListener('click', ()=> updateRole('individual'));
-document.getElementById('business-btn').addEventListener('click', ()=> updateRole('business'));
 
-setTimeout(()=>{
-  const timeoutOverlay = document.getElementById('timeoutOverlay');
-  timeoutOverlay.style.display="flex";
-  setTimeout(()=>window.location.href=HOME_PAGE,3000);
+// Update role via webhook & redirect
+function updateRole(role) {
+  localStorage.setItem('user_role', role); // store role locally
+  if (!AUTH_TOKEN) {
+    // New user: skip auth token, still allow form redirect
+    window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
+    return;
+  }
+
+  // Send role to Make.com
+  fetch(WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${AUTH_TOKEN}`
+    },
+    body: JSON.stringify({ role })
+  })
+  .finally(() => {
+    // Always redirect to form even if webhook fails
+    window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
+  });
+}
+
+// Attach button click events
+document.getElementById('individual-btn').addEventListener('click', () => updateRole('individual'));
+document.getElementById('business-btn').addEventListener('click', () => updateRole('business'));
+
+// Hidden timeout for logging (no UX overlay)
+setTimeout(() => {
+  console.log("Chooserole page TIME_LIMIT reached."); // purely for internal tracking
 }, TIME_LIMIT);
 </script>
 </body>
