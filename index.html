@@ -58,16 +58,20 @@
   .nirm-banner span:hover { animation-play-state:paused; }
   @keyframes marquee { 0% {transform:translateX(0);} 100% {transform:translateX(-100%);} }
 
-  /* Hero box */
+  /* Glassy Hero box */
   .hero-box {
     display:flex; flex-direction:column; align-items:center; text-align:center;
     padding:1.2rem 1.8rem; border-radius:20px;
-    background:#001b3e; color:#fffcf0;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color:#fffcf0;
     box-shadow:0 10px 30px rgba(0,0,0,0.4);
     perspective:1000px; transform-style:preserve-3d;
     transition: transform 0.5s ease;
     max-width:360px;
     width:90%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
   .hero-box:hover { transform: rotateY(5deg) rotateX(3deg); }
 
@@ -143,7 +147,6 @@
 <div id="timeoutOverlay">⏳ Time limit exceeded. Returning to home page...</div>
 
 <script>
-  // ===== Config =====
   const WEBHOOK_URL = 'https://hook.us1.make.com/your-secure-webhook-id';
   const AUTH_TOKEN = localStorage.getItem('auth_token');
   const INDIVIDUAL_FORM = "https://nirm.uk/formindividual";
@@ -159,11 +162,9 @@
     "Your Sourcing Solution",
     "Where Events Meet Innovation"
   ];
-  const TIME_LIMIT = 2*60*1000; // 2 minutes
+  const TIME_LIMIT = 2*60*1000;
 
   const teleprompter = document.getElementById("teleprompter");
-
-  // ==== Teleprompter animation synced to timer ====
   const lineDuration = TIME_LIMIT / TAGLINE_LINES.length;
   let currentLine = 0;
   function showLine(){
@@ -173,7 +174,6 @@
   }
   showLine();
 
-  // ==== Role selection ====
   function updateRole(role){
     if(!AUTH_TOKEN){ alert("Authentication missing. Redirecting to home..."); return window.location.href=HOME_PAGE; }
     fetch(WEBHOOK_URL,{
@@ -187,8 +187,7 @@
   document.getElementById('individual-btn').addEventListener('click', ()=> updateRole('individual'));
   document.getElementById('business-btn').addEventListener('click', ()=> updateRole('business'));
 
-  // ==== Hidden 2-minute timeout (commented for preview) ====
-  /*
+  /* Timeout hidden for now
   setTimeout(()=>{
     const timeoutOverlay = document.getElementById('timeoutOverlay');
     timeoutOverlay.style.display="flex";
