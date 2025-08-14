@@ -133,6 +133,8 @@ const AUTH_TOKEN = localStorage.getItem('auth_token');
 const INDIVIDUAL_FORM = "https://nirm.uk/formindividual";
 const BUSINESS_FORM = "https://nirm.uk/formbusiness";
 const HOME_PAGE = "https://nirm.uk";
+const INDIVIDUAL_DASH = "https://sapphire.nirm.uk";
+const BUSINESS_DASH = "https://business.nirm.uk";
 
 // Tagline teleprompter
 const TAGLINE_LINES = [
@@ -157,22 +159,37 @@ function showLine() {
 }
 showLine();
 
-// Prevent returning users from re-choosing role
+// Validate user access
+if (!AUTH_TOKEN || !window.location.hostname.includes("chooserole.nirm.uk")) {
+  console.log("Access invalid: redirecting to homepage.");
+  window.location.href = HOME_PAGE;
+}
+
+// Handle returning users
 const existingRole = localStorage.getItem('user_role');
 if (existingRole) {
-  window.location.href = HOME_PAGE; // or dashboard if applicable
+  if (existingRole === 'individual') {
+    console.log("Returning user detected: individual → sapphire.nirm.uk");
+    window.location.href = INDIVIDUAL_DASH;
+  } else if (existingRole === 'business') {
+    console.log("Returning user detected: business → business.nirm.uk");
+    window.location.href = BUSINESS_DASH;
+  }
+} else {
+  console.log("New user detected: staying on role chooser page.");
 }
 
 // Update role via webhook & redirect
 function updateRole(role) {
   localStorage.setItem('user_role', role); // store role locally
+
   if (!AUTH_TOKEN) {
-    // New user: skip auth token, still allow form redirect
+    console.log(`New user selected role: ${role}, redirecting to form.`);
     window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
     return;
   }
 
-  // Send role to Make.com
+  console.log(`Sending role "${role}" to Make.com webhook...`);
   fetch(WEBHOOK_URL, {
     method: 'POST',
     headers: { 
@@ -182,7 +199,7 @@ function updateRole(role) {
     body: JSON.stringify({ role })
   })
   .finally(() => {
-    // Always redirect to form even if webhook fails
+    console.log(`Redirecting to ${role} form after webhook.`);
     window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
   });
 }
@@ -191,9 +208,9 @@ function updateRole(role) {
 document.getElementById('individual-btn').addEventListener('click', () => updateRole('individual'));
 document.getElementById('business-btn').addEventListener('click', () => updateRole('business'));
 
-// Hidden timeout for logging (no UX overlay)
+// Hidden timeout for logging
 setTimeout(() => {
-  console.log("Chooserole page TIME_LIMIT reached."); // purely for internal tracking
+  console.log("Chooserole page TIME_LIMIT reached."); 
 }, TIME_LIMIT);
 </script>
 </body>
