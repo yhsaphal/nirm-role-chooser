@@ -213,5 +213,44 @@ setTimeout(() => {
   console.log("Chooserole page TIME_LIMIT reached."); 
 }, TIME_LIMIT);
 </script>
+
+  <script>
+    // 1️⃣ Detect query param from Auth0 redirect
+    if (window.location.search.includes('no_role=true')) {
+      sessionStorage.setItem('no_role_redirect', '1');
+    }
+
+    // 2️⃣ Show toast if redirected because of missing role
+    const arrivedWithoutRole = sessionStorage.getItem('no_role_redirect');
+
+    if (arrivedWithoutRole) {
+      const toast = document.createElement('div');
+      toast.textContent = "Hey! Looks like you haven't picked your role yet. Please select one to continue.";
+      toast.style.position = 'fixed';
+      toast.style.bottom = '20px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.backgroundColor = '#001b3e';
+      toast.style.color = '#fffcf0';
+      toast.style.padding = '12px 20px';
+      toast.style.borderRadius = '12px';
+      toast.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
+      toast.style.fontFamily = "'Bricolage Grotesque', sans-serif";
+      toast.style.zIndex = '9999';
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.5s ease';
+
+      document.body.appendChild(toast);
+
+      setTimeout(() => { toast.style.opacity = '1'; }, 100);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 600);
+      }, 5000);
+
+      sessionStorage.removeItem('no_role_redirect');
+    }
+  </script>
+  
 </body>
 </html>
