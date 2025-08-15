@@ -159,15 +159,47 @@ function showLine() {
 }
 showLine();
 
-// Validate user access
-if (!AUTH_TOKEN || !window.location.hostname.includes("chooserole.nirm.uk")) {
+// 1️⃣ Detect query param from Auth0 redirect
+if (window.location.search.includes('no_role=true')) {
+  sessionStorage.setItem('no_role_redirect', '1');
+}
+
+// 2️⃣ Skip token check if they arrived from Auth0 "no role" redirect
+const arrivedWithoutRole = sessionStorage.getItem('no_role_redirect');
+if (!arrivedWithoutRole && (!AUTH_TOKEN || !window.location.hostname.includes("chooserole.nirm.uk"))) {
   console.log("Access invalid: redirecting to homepage.");
   window.location.href = HOME_PAGE;
 }
 
-// Handle returning users
+// 3️⃣ Show toast if redirected because of missing role
+if (arrivedWithoutRole) {
+  const toast = document.createElement('div');
+  toast.textContent = "Hey! Looks like you haven't picked your role yet. Please select one to continue.";
+  toast.style.position = 'fixed';
+  toast.style.bottom = '20px';
+  toast.style.left = '50%';
+  toast.style.transform = 'translateX(-50%)';
+  toast.style.backgroundColor = '#001b3e';
+  toast.style.color = '#fffcf0';
+  toast.style.padding = '12px 20px';
+  toast.style.borderRadius = '12px';
+  toast.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
+  toast.style.fontFamily = "'Bricolage Grotesque', sans-serif";
+  toast.style.zIndex = '9999';
+  toast.style.opacity = '0';
+  toast.style.transition = 'opacity 0.5s ease';
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '1'; }, 100);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 600);
+  }, 5000);
+  sessionStorage.removeItem('no_role_redirect');
+}
+
+// 4️⃣ Handle returning users
 const existingRole = localStorage.getItem('user_role');
-if (existingRole) {
+if (!arrivedWithoutRole && existingRole) {
   if (existingRole === 'individual') {
     console.log("Returning user detected: individual → sapphire.nirm.uk");
     window.location.href = INDIVIDUAL_DASH;
@@ -179,16 +211,14 @@ if (existingRole) {
   console.log("New user detected: staying on role chooser page.");
 }
 
-// Update role via webhook & redirect
+// 5️⃣ Update role via webhook & redirect
 function updateRole(role) {
-  localStorage.setItem('user_role', role); // store role locally
-
+  localStorage.setItem('user_role', role);
   if (!AUTH_TOKEN) {
     console.log(`New user selected role: ${role}, redirecting to form.`);
     window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
     return;
   }
-
   console.log(`Sending role "${role}" to Make.com webhook...`);
   fetch(WEBHOOK_URL, {
     method: 'POST',
@@ -203,54 +233,10 @@ function updateRole(role) {
     window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
   });
 }
-
-// Attach button click events
 document.getElementById('individual-btn').addEventListener('click', () => updateRole('individual'));
 document.getElementById('business-btn').addEventListener('click', () => updateRole('business'));
-
-// Hidden timeout for logging
-setTimeout(() => {
-  console.log("Chooserole page TIME_LIMIT reached."); 
-}, TIME_LIMIT);
+setTimeout(() => { console.log("Chooserole page TIME_LIMIT reached."); }, TIME_LIMIT);
 </script>
 
-  <script>
-    // 1️⃣ Detect query param from Auth0 redirect
-    if (window.location.search.includes('no_role=true')) {
-      sessionStorage.setItem('no_role_redirect', '1');
-    }
-
-    // 2️⃣ Show toast if redirected because of missing role
-    const arrivedWithoutRole = sessionStorage.getItem('no_role_redirect');
-
-    if (arrivedWithoutRole) {
-      const toast = document.createElement('div');
-      toast.textContent = "Hey! Looks like you haven't picked your role yet. Please select one to continue.";
-      toast.style.position = 'fixed';
-      toast.style.bottom = '20px';
-      toast.style.left = '50%';
-      toast.style.transform = 'translateX(-50%)';
-      toast.style.backgroundColor = '#001b3e';
-      toast.style.color = '#fffcf0';
-      toast.style.padding = '12px 20px';
-      toast.style.borderRadius = '12px';
-      toast.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
-      toast.style.fontFamily = "'Bricolage Grotesque', sans-serif";
-      toast.style.zIndex = '9999';
-      toast.style.opacity = '0';
-      toast.style.transition = 'opacity 0.5s ease';
-
-      document.body.appendChild(toast);
-
-      setTimeout(() => { toast.style.opacity = '1'; }, 100);
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => toast.remove(), 600);
-      }, 5000);
-
-      sessionStorage.removeItem('no_role_redirect');
-    }
-  </script>
-  
 </body>
 </html>
