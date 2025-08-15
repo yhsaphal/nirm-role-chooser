@@ -123,12 +123,27 @@ body {
 
 <div class="bottom-banner-container">
   <div class="nirm-banner bottom">
-    <span>NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</span>
+    <span>NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</span>
   </div>
 </div>
 
 <script>
-// Teleprompter tagline
+const WEBHOOK_URL = 'https://hook.eu2.make.com/bw7t9bh97mlu13t0cvxw2fy2wfo3vgti';
+const AUTH_TOKEN = localStorage.getItem('auth_token');
+const INDIVIDUAL_FORM = "https://nirm.uk/formindividual";
+const BUSINESS_FORM = "https://nirm.uk/formbusiness";
+const HOME_PAGE = "https://nirm.uk";
+const INDIVIDUAL_DASH = "https://sapphire.nirm.uk";
+const BUSINESS_DASH = "https://business.nirm.uk";
+
+// -------------------- Auth0 Login Validation --------------------
+if (!AUTH_TOKEN) {
+  console.log("Guest or invalid session detected → redirecting to homepage.");
+  alert("You must log in first to access this page.");
+  window.location.href = HOME_PAGE;
+}
+
+// -------------------- Tagline Teleprompter --------------------
 const TAGLINE_LINES = [
   "Connecting You to the Best",
   "Your Vision, Our Tech",
@@ -150,32 +165,52 @@ function showLine() {
   setTimeout(showLine, lineDuration);
 }
 showLine();
-</script>
 
-<script>
-const WEBHOOK_URL = 'https://hook.eu2.make.com/bw7t9bh97mlu13t0cvxw2fy2wfo3vgti';
-const AUTH_TOKEN = localStorage.getItem('auth_token'); 
-const INDIVIDUAL_FORM = "https://nirm.uk/formindividual";
-const BUSINESS_FORM = "https://nirm.uk/formbusiness";
-const HOME_PAGE = "https://nirm.uk";
-const INDIVIDUAL_DASH = "https://sapphire.nirm.uk";
-const BUSINESS_DASH = "https://business.nirm.uk";
-
-// Block direct guest access
-if (!AUTH_TOKEN || !window.location.hostname.includes("chooserole.nirm.uk")) {
-  console.log("Access invalid: redirecting to homepage.");
-  window.location.href = HOME_PAGE;
-}
-
-// Returning users auto-redirect
+// -------------------- Handle returning users --------------------
 const existingRole = localStorage.getItem('user_role');
 if (existingRole) {
-  if (existingRole === 'individual') window.location.href = INDIVIDUAL_DASH;
-  else if (existingRole === 'business') window.location.href = BUSINESS_DASH;
+  console.log(`Returning user with role "${existingRole}" detected.`);
 }
 
-// Show toast if redirected from PostLogin
+// -------------------- Update role via webhook & redirect --------------------
+function updateRole(role) {
+  localStorage.setItem('user_role', role); // store role locally
+
+  if (!AUTH_TOKEN) {
+    console.log(`New user selected role: ${role}, redirecting to form.`);
+    window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
+    return;
+  }
+
+  console.log(`Sending role "${role}" to Make.com webhook...`);
+  fetch(WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${AUTH_TOKEN}`
+    },
+    body: JSON.stringify({ role })
+  })
+  .finally(() => {
+    console.log(`Redirecting to ${role} form after webhook.`);
+    window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
+  });
+}
+
+document.getElementById('individual-btn').addEventListener('click', () => updateRole('individual'));
+document.getElementById('business-btn').addEventListener('click', () => updateRole('business'));
+
+// -------------------- Hidden timeout for logging --------------------
+setTimeout(() => { console.log("Chooserole page TIME_LIMIT reached."); }, TIME_LIMIT);
+
+// -------------------- Show toast for missing role from Auth0 redirect --------------------
 if (window.location.search.includes('no_role=true')) {
+  sessionStorage.setItem('no_role_redirect', '1');
+}
+
+const arrivedWithoutRole = sessionStorage.getItem('no_role_redirect');
+
+if (arrivedWithoutRole) {
   const toast = document.createElement('div');
   toast.textContent = "Hey! Looks like you haven't picked your role yet. Please select one to continue.";
   toast.style.position = 'fixed';
@@ -191,34 +226,17 @@ if (window.location.search.includes('no_role=true')) {
   toast.style.zIndex = '9999';
   toast.style.opacity = '0';
   toast.style.transition = 'opacity 0.5s ease';
+
   document.body.appendChild(toast);
+
   setTimeout(() => { toast.style.opacity = '1'; }, 100);
-  setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 600); }, 5000);
-}
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 600);
+  }, 5000);
 
-// Role selection & webhook
-function updateRole(role) {
-  localStorage.setItem('user_role', role);
-  if (!AUTH_TOKEN) {
-    window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
-    return;
-  }
-  fetch(WEBHOOK_URL, {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${AUTH_TOKEN}`
-    },
-    body: JSON.stringify({ role })
-  })
-  .finally(() => {
-    window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
-  });
+  sessionStorage.removeItem('no_role_redirect');
 }
-
-document.getElementById('individual-btn').addEventListener('click', () => updateRole('individual'));
-document.getElementById('business-btn').addEventListener('click', () => updateRole('business'));
 </script>
-
 </body>
 </html>
