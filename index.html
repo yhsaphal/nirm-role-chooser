@@ -1,152 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Choose Your Role - NIRM</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
-      text-align: center;
-    }
-    header {
-      padding: 20px;
-    }
-    h1 {
-      color: #333;
-    }
-    .tagline {
-      margin: 20px auto;
-      font-size: 18px;
-      font-style: italic;
-      color: #666;
-    }
-    .role-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 40px;
-    }
-    button {
-      padding: 15px 30px;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      background-color: #007BFF;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Select Your Role - NIRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&display=swap" rel="stylesheet" />
+<style>
+body {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  margin:0; padding:0;
+  background: linear-gradient(-45deg, #001b3e, #fffcf0, #004080, #a0c4ff);
+  background-size: 400% 400%;
+  animation: gradientBG 30s ease infinite;
+  color: #001b3e;
+  display:flex; justify-content:center; align-items:center;
+  flex-direction:column;
+  min-height:100vh; overflow-x:hidden;
+}
+@keyframes gradientBG {
+  0% {background-position:0% 50%;}
+  50% {background-position:100% 50%;}
+  100% {background-position:0% 50%;}
+}
+.nirm-banner {
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 1.4rem;
+  padding: 0.5rem 0;
+  background-color: #001b3e;
+  color: #fffcf0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  width:100%;
+}
+.nirm-banner::before,
+.nirm-banner::after {
+  content:'';
+  position:absolute;
+  top:0;
+  width:5rem; height:100%;
+  z-index:2;
+}
+.nirm-banner::before { left:0; background:linear-gradient(to right,#001b3e,transparent);}
+.nirm-banner::after { right:0; background:linear-gradient(to left,#001b3e,transparent);}
+.nirm-banner span {
+  display:inline-block;
+  padding-left:100%;
+  animation: marquee 30s linear infinite;
+}
+.nirm-banner span:hover { animation-play-state:paused; }
+@keyframes marquee { 0% {transform:translateX(0);} 100% {transform:translateX(-100%);} }
+
+.hero-box {
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  padding:1.2rem 1.8rem; border-radius:20px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px);
+  color:#001b3e;
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  perspective:1000px; transform-style:preserve-3d;
+  transition: transform 0.5s ease;
+  max-width:360px;
+  width:90%;
+}
+.hero-box:hover { transform: rotateY(5deg) rotateX(3deg); }
+.hero-box .logo { font-size:2.5rem; font-weight:bold; margin-bottom:0.8rem; }
+.hero-box .tagline { font-size:1.1rem; line-height:1.5; min-height:6em; }
+.role-buttons { margin-top:1.5rem; }
+.role-buttons button {
+  font-size:1.3rem; margin:0.4rem; padding:0.9rem 2rem;
+  border:none; border-radius:10px;
+  background-color:#fffcf0; color:#001b3e;
+  cursor:pointer; box-shadow:0 5px 15px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.role-buttons button:hover {
+  transform: translateY(-4px);
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+
+.nirm-banner.top {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+.bottom-banner-container {
+  position: fixed; bottom:0; width:100%; z-index:100;
+}
+
+@media screen and (max-width: 400px) {
+  .hero-box { max-width: 95%; padding:1rem 1.2rem; }
+  .hero-box .logo { font-size:2rem; }
+  .hero-box .tagline { font-size:1rem; min-height:5em; }
+  .role-buttons button { font-size:1rem; padding:0.7rem 1.5rem; }
+  .nirm-banner { font-size:1rem; letter-spacing:1px; }
+}
+@media screen and (max-width: 240px) {
+  .hero-box .logo { font-size:1.6rem; }
+  .hero-box .tagline { font-size:0.9rem; }
+  .role-buttons button { font-size:0.8rem; padding:0.5rem 1rem; }
+  .nirm-banner { font-size:0.8rem; letter-spacing:0.5px; }
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>Choose Your Role</h1>
-    <div id="teleprompter" class="tagline"></div>
-  </header>
 
+<div class="nirm-banner top">
+  <span>NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</span>
+</div>
+
+<div class="hero-box" role="main" aria-label="Role selection box">
+  <div class="logo" aria-label="NIRM Logo">NIRM</div>
+  <div class="tagline" aria-live="polite" id="teleprompter"></div>
   <div class="role-buttons">
-    <button id="individual-btn">I am an Individual</button>
-    <button id="business-btn">I am a Business</button>
+    <button id="individual-btn" aria-label="Sign up as an Individual">Individual</button>
+    <button id="business-btn" aria-label="Sign up as a Business">Business</button>
   </div>
+</div>
 
-  <script>
-    const WEBHOOK_URL = 'https://hook.eu2.make.com/bw7t9bh97mlu13t0cvxw2fy2wfo3vgti';
-    const AUTH_TOKEN = localStorage.getItem('auth_token');
-    const INDIVIDUAL_FORM = "https://nirm.uk/formindividual";
-    const BUSINESS_FORM = "https://nirm.uk/formbusiness";
-    const HOME_PAGE = "https://nirm.uk";
-    const INDIVIDUAL_DASH = "https://sapphire.nirm.uk";
-    const BUSINESS_DASH = "https://business.nirm.uk";
+<div class="bottom-banner-container">
+  <div class="nirm-banner bottom">
+    <span>NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM • NIRM</span>
+  </div>
+</div>
 
-    // Tagline teleprompter
-    const TAGLINE_LINES = [
-      "Connecting You to the Best",
-      "Your Vision, Our Tech",
-      "Your Event, Your Way",
-      "Built for You",
-      "Powered by SapphireAI, Backed by OpenAI",
-      "The Clear Path for Seamless Execution",
-      "Your Sourcing Solution",
-      "Where Events Meet Innovation"
-    ];
-    const teleprompter = document.getElementById("teleprompter");
-    let currentLine = 0;
-    const TIME_LIMIT = 2 * 60 * 1000;
-    const lineDuration = TIME_LIMIT / TAGLINE_LINES.length;
+<script>
+const WEBHOOK_URL = 'https://hook.eu2.make.com/bw7t9bh97mlu13t0cvxw2fy2wfo3vgti';
+const AUTH_TOKEN = localStorage.getItem('auth_token');
+const INDIVIDUAL_FORM = "https://nirm.uk/formindividual";
+const BUSINESS_FORM = "https://nirm.uk/formbusiness";
+const HOME_PAGE = "https://nirm.uk";
+const INDIVIDUAL_DASH = "https://sapphire.nirm.uk";
+const BUSINESS_DASH = "https://business.nirm.uk";
 
-    function showLine() {
-      teleprompter.textContent = TAGLINE_LINES[currentLine];
-      currentLine = (currentLine + 1) % TAGLINE_LINES.length;
-      setTimeout(showLine, lineDuration);
-    }
-    showLine();
+// Tagline teleprompter
+const TAGLINE_LINES = [
+  "Connecting You to the Best",
+  "Your Vision, Our Tech",
+  "Your Event, Your Way",
+  "Built for You",
+  "Powered by SapphireAI, Backed by OpenAI",
+  "The Clear Path for Seamless Execution",
+  "Your Sourcing Solution",
+  "Where Events Meet Innovation"
+];
+const teleprompter = document.getElementById("teleprompter");
+let currentLine = 0;
+const TIME_LIMIT = 2 * 60 * 1000;
+const lineDuration = TIME_LIMIT / TAGLINE_LINES.length;
 
-    // Validate direct access
-    if (!AUTH_TOKEN || !window.location.hostname.includes("chooserole.nirm.uk")) {
-      console.log("Access invalid: redirecting to homepage.");
-      window.location.href = HOME_PAGE;
-    }
+function showLine() {
+  teleprompter.textContent = TAGLINE_LINES[currentLine];
+  currentLine = (currentLine + 1) % TAGLINE_LINES.length;
+  setTimeout(showLine, lineDuration);
+}
+showLine();
 
-    // On page load, verify role from backend before deciding redirect
-    (async function verifyUserRole() {
-      try {
-        console.log("Verifying role with backend...");
-        const res = await fetch(WEBHOOK_URL + "?checkRole=true", {
-          method: "GET",
-          headers: { 
-            "Authorization": `Bearer ${AUTH_TOKEN}`
-          }
-        });
-        const data = await res.json();
-        if (data && data.role) {
-          console.log(`Existing role found in backend: ${data.role}`);
-          if (data.role === "individual") {
-            window.location.href = INDIVIDUAL_DASH;
-          } else if (data.role === "business") {
-            window.location.href = BUSINESS_DASH;
-          }
-        } else {
-          console.log("No role in backend: staying on chooser page.");
-        }
-      } catch (err) {
-        console.error("Error verifying role, staying on chooser page:", err);
-      }
-    })();
+// Validate user access
+if (!AUTH_TOKEN || !window.location.hostname.includes("chooserole.nirm.uk")) {
+  console.log("Access invalid: redirecting to homepage.");
+  window.location.href = HOME_PAGE;
+}
 
-    // Update role via webhook & redirect
-    function updateRole(role) {
-      localStorage.setItem('user_role', role); // store locally for quick checks
-      console.log(`Sending role "${role}" to backend webhook...`);
+// Handle returning users
+const existingRole = localStorage.getItem('user_role');
+if (existingRole) {
+  if (existingRole === 'individual') {
+    console.log("Returning user detected: individual → sapphire.nirm.uk");
+    window.location.href = INDIVIDUAL_DASH;
+  } else if (existingRole === 'business') {
+    console.log("Returning user detected: business → business.nirm.uk");
+    window.location.href = BUSINESS_DASH;
+  }
+} else {
+  console.log("New user detected: staying on role chooser page.");
+}
 
-      fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${AUTH_TOKEN}`
-        },
-        body: JSON.stringify({ role })
-      })
-      .finally(() => {
-        console.log(`Redirecting to ${role} form after webhook.`);
-        window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
-      });
-    }
+// Update role via webhook & redirect
+function updateRole(role) {
+  localStorage.setItem('user_role', role); // store role locally
 
-    // Attach button click events
-    document.getElementById('individual-btn').addEventListener('click', () => updateRole('individual'));
-    document.getElementById('business-btn').addEventListener('click', () => updateRole('business'));
+  if (!AUTH_TOKEN) {
+    console.log(`New user selected role: ${role}, redirecting to form.`);
+    window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
+    return;
+  }
 
-    // Hidden timeout for logging
-    setTimeout(() => {
-      console.log("Chooserole page TIME_LIMIT reached."); 
-    }, TIME_LIMIT);
-  </script>
+  console.log(`Sending role "${role}" to Make.com webhook...`);
+  fetch(WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${AUTH_TOKEN}`
+    },
+    body: JSON.stringify({ role })
+  })
+  .finally(() => {
+    console.log(`Redirecting to ${role} form after webhook.`);
+    window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
+  });
+}
+
+// Attach button click events
+document.getElementById('individual-btn').addEventListener('click', () => updateRole('individual'));
+document.getElementById('business-btn').addEventListener('click', () => updateRole('business'));
+
+// Hidden timeout for logging
+setTimeout(() => {
+  console.log("Chooserole page TIME_LIMIT reached."); 
+}, TIME_LIMIT);
+</script>
 </body>
 </html>
