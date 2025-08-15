@@ -159,19 +159,53 @@ function showLine() {
 }
 showLine();
 
-// 1️⃣ Detect query param from Auth0 redirect
+// ✅ Strict Auth & Role Handling
+if (!AUTH_TOKEN) {
+  console.log("Access denied: not logged in → redirecting to homepage.");
+  window.location.href = HOME_PAGE;
+} else {
+  const existingRole = localStorage.getItem('user_role');
+
+  if (existingRole === 'individual') {
+    console.log("Logged-in individual → sapphire.nirm.uk");
+    window.location.href = INDIVIDUAL_DASH;
+  } else if (existingRole === 'business') {
+    console.log("Logged-in business → business.nirm.uk");
+    window.location.href = BUSINESS_DASH;
+  } else {
+    // No role → stay on chooserole page
+    console.log("Logged-in user with no role → choose role now.");
+  }
+}
+
+// Update role via webhook & redirect
+function updateRole(role) {
+  localStorage.setItem('user_role', role);
+
+  console.log(`Sending role "${role}" to Make.com webhook...`);
+  fetch(WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${AUTH_TOKEN}`
+    },
+    body: JSON.stringify({ role })
+  })
+  .finally(() => {
+    console.log(`Redirecting to ${role} form after webhook.`);
+    window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
+  });
+}
+
+// Attach button click events
+document.getElementById('individual-btn').addEventListener('click', () => updateRole('individual'));
+document.getElementById('business-btn').addEventListener('click', () => updateRole('business'));
+
+// Handle "no_role" query param
 if (window.location.search.includes('no_role=true')) {
   sessionStorage.setItem('no_role_redirect', '1');
 }
-
-// 2️⃣ Skip token check if they arrived from Auth0 "no role" redirect
 const arrivedWithoutRole = sessionStorage.getItem('no_role_redirect');
-if (!arrivedWithoutRole && (!AUTH_TOKEN || !window.location.hostname.includes("chooserole.nirm.uk"))) {
-  console.log("Access invalid: redirecting to homepage.");
-  window.location.href = HOME_PAGE;
-}
-
-// 3️⃣ Show toast if redirected because of missing role
 if (arrivedWithoutRole) {
   const toast = document.createElement('div');
   toast.textContent = "Hey! Looks like you haven't picked your role yet. Please select one to continue.";
@@ -190,52 +224,9 @@ if (arrivedWithoutRole) {
   toast.style.transition = 'opacity 0.5s ease';
   document.body.appendChild(toast);
   setTimeout(() => { toast.style.opacity = '1'; }, 100);
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    setTimeout(() => toast.remove(), 600);
-  }, 5000);
+  setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 600); }, 5000);
   sessionStorage.removeItem('no_role_redirect');
 }
-
-// 4️⃣ Handle returning users
-const existingRole = localStorage.getItem('user_role');
-if (!arrivedWithoutRole && existingRole) {
-  if (existingRole === 'individual') {
-    console.log("Returning user detected: individual → sapphire.nirm.uk");
-    window.location.href = INDIVIDUAL_DASH;
-  } else if (existingRole === 'business') {
-    console.log("Returning user detected: business → business.nirm.uk");
-    window.location.href = BUSINESS_DASH;
-  }
-} else {
-  console.log("New user detected: staying on role chooser page.");
-}
-
-// 5️⃣ Update role via webhook & redirect
-function updateRole(role) {
-  localStorage.setItem('user_role', role);
-  if (!AUTH_TOKEN) {
-    console.log(`New user selected role: ${role}, redirecting to form.`);
-    window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
-    return;
-  }
-  console.log(`Sending role "${role}" to Make.com webhook...`);
-  fetch(WEBHOOK_URL, {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${AUTH_TOKEN}`
-    },
-    body: JSON.stringify({ role })
-  })
-  .finally(() => {
-    console.log(`Redirecting to ${role} form after webhook.`);
-    window.location.href = (role === 'individual') ? INDIVIDUAL_FORM : BUSINESS_FORM;
-  });
-}
-document.getElementById('individual-btn').addEventListener('click', () => updateRole('individual'));
-document.getElementById('business-btn').addEventListener('click', () => updateRole('business'));
-setTimeout(() => { console.log("Chooserole page TIME_LIMIT reached."); }, TIME_LIMIT);
 </script>
 
 </body>
